@@ -11,7 +11,7 @@ AI 當次回覆／輪次結束 → Mac 通知 BLE 裝置閃光 → 使用者搖�
 ## 取得原始碼
 
 ```sh
-git clone --recurse-submodules git@github.com:minicoursedev/aibox-mac.git
+git clone --recurse-submodules https://github.com/minicoursedev/aibox-mac.git
 cd aibox-mac
 ```
 
