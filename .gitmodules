@@ -1,0 +1,3 @@
+[submodule "Sources/AIBoxCore/Remote"]
+	path = Sources/AIBoxCore/Remote
+	url = git@github.com:minicoursedev/aibox-remote.git
