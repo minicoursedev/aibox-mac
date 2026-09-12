@@ -44,10 +44,10 @@ public struct TurnCompletion: Codable, Equatable {
 
     public var eventLabel: String {
         switch type {
-        case "PermissionRequest": return "授權請求"
-        case "UserInputRequest": return "等待回答"
-        case "Stop": return "回覆停止"
-        default: return "回覆已結束"
+        case "PermissionRequest": return String(localized: "Permission request", bundle: AppLanguage.bundle)
+        case "UserInputRequest": return String(localized: "Awaiting answer", bundle: AppLanguage.bundle)
+        case "Stop": return String(localized: "Response stopped", bundle: AppLanguage.bundle)
+        default: return String(localized: "Response finished", bundle: AppLanguage.bundle)
         }
     }
 

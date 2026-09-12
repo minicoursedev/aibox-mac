@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>
+
+Codex will send the conversation ID, turn ID, and final response, permission request, or questions and options to local AIBox. This program only receives notifications. It does not answer questions, approve or deny permissions, or request continuation.</key>
+	<string>
+
+Codex 將把對話 ID、輪次 ID，以及最後回覆、授權請求或問題與選項傳給本機 AIBox。此程式只接收通知，不代答問題、不同意或拒絕授權，不要求續跑。</string>
+	<key> · %@ confirmed</key>
+	<string> · %@已確認</string>
+	<key>%.1f s</key>
+	<string>%.1f 秒</string>
+	<key>%@
+%@
+Conversation: %@
+Click to open this conversation</key>
+	<string>%@
+%@
+對話：%@
+點擊開啟此對話</string>
+	<key>%@ cleared its pairing, but macOS still has the old pairing. In System Settings → Bluetooth, choose Forget This Device for AIBox, then return, click Search Again and confirm the light color.</key>
+	<string>%@ 已清除配對，但 macOS 仍保留舊配對。請在「系統設定 → 藍牙」對 AIBox 選擇「忘記此裝置設定」，再回來按「重新搜尋」並確認燈色。</string>
+	<key>%@ color %@</key>
+	<string>%@顏色%@</string>
+	<key>AIBox Settings</key>
+	<string>AIBox 設定</string>
+	<key>AIBox communication characteristics do not match.</key>
+	<string>AIBox 通訊特徵不符。</string>
+	<key>AIBox communication service not found.</key>
+	<string>找不到 AIBox 通訊服務。</string>
+	<key>AIBox could not start</key>
+	<string>AIBox 無法啟動</string>
+	<key>AIBox has stopped.</key>
+	<string>AIBox 已停止。</string>
+	<key>AIBox is already running.</key>
+	<string>AIBox 已經在執行。</string>
+	<key>AIBox: Running</key>
+	<string>AIBox：執行中</string>
+	<key>AIBox: Running
+%@</key>
+	<string>AIBox：執行中
+%@</string>
+	<key>Above threshold</key>
+	<string>音量高於拉桿</string>
+	<key>Alternating</key>
+	<string>兩色交替</string>
+	<key>Awaiting answer</key>
+	<string>等待回答</string>
+	<key>Awaiting trust / activation</key>
+	<string>待信任／啟用</string>
+	<key>Below threshold</key>
+	<string>音量低於拉桿</string>
+	<key>Blue</key>
+	<string>藍色</string>
+	<key>Bluetooth access denied. Allow AIBox to use Bluetooth in System Settings.</key>
+	<string>未獲藍牙權限；請在系統設定允許 AIBox 使用藍牙。</string>
+	<key>Cancel</key>
+	<string>取消</string>
+	<key>Choose / Change Device…</key>
+	<string>選擇／更換裝置…</string>
+	<key>Choose AIBox</key>
+	<string>選擇 AIBox</string>
+	<key>Choose a box, observe its flashing color, then select the color you see. After confirmation, this Mac will remember and reconnect only to that box.</key>
+	<string>選一台 box，觀察它閃爍的顏色，再選出你看到的顏色。確認後，這台 Mac 會記住並只連回這台 box。</string>
+	<key>Choose motion or sound to open notifications, and adjust the sound threshold live.</key>
+	<string>選擇用晃動或聲音開啟通知，並即時調整收音。</string>
+	<key>Choose the display language for AIBox.</key>
+	<string>選擇 AIBox 的顯示語系。</string>
+	<key>Click Identify Again and confirm the color.</key>
+	<string>請按「重新辨識」再確認顏色。</string>
+	<key>Click a swatch to open the color wheel. Colors are saved automatically and applied when connected.</key>
+	<string>點色塊開啟色環；顏色自動儲存，連線後套用至對應燈號。</string>
+	<key>Click to choose %@ color %@ using the color wheel</key>
+	<string>點擊以色環選擇%@顏色%@</string>
+	<key>Codex App or aibox-notify was not found. Check the installation and build.</key>
+	<string>找不到 Codex App 或 aibox-notify，請確認安裝與建置結果。</string>
+	<key>Codex configuration executable not found. Make sure Codex App is installed.</key>
+	<string>找不到 Codex 設定程式，請確認 Codex App 已安裝。</string>
+	<key>Codex could not load hooks. Check the existing hook settings first.</key>
+	<string>Codex 無法載入 Hooks，請先檢查既有 Hooks 設定。</string>
+	<key>Codex hooks are disabled. AIBox did not change this setting.</key>
+	<string>Codex 的 hooks 功能已停用；AIBox 未更改此設定。</string>
+	<key>Codex settings have not been checked.</key>
+	<string>尚未檢查 Codex 設定。</string>
+	<key>Codex setup failed: %@</key>
+	<string>Codex 設定失敗：%@</string>
+	<key>Codex setup timed out. Reopen Settings to check the result.</key>
+	<string>Codex 設定操作逾時，請重新開啟設定視窗確認結果。</string>
+	<key>Color interval</key>
+	<string>交替間隔</string>
+	<key>Color interval, seconds per color</key>
+	<string>交替間隔，每個顏色顯示秒數</string>
+	<key>Configured and trusted</key>
+	<string>已設定並信任</string>
+	<key>Connected to %@; waiting for remote hook notifications.</key>
+	<string>已連線至 %@；等待遠端 Hook 通知。</string>
+	<key>Connecting to %@…</key>
+	<string>正在連線至 %@…</string>
+	<key>Connection failed.</key>
+	<string>連線失敗。</string>
+	<key>Connection timed out.</key>
+	<string>連線逾時。</string>
+	<key>Could Not Open Conversation</key>
+	<string>無法開啟對話</string>
+	<key>Could not establish secure pairing. Reconnect and try again.</key>
+	<string>無法建立安全配對，請重新連線。</string>
+	<key>Could not read the Codex settings response. Setup success is unconfirmed.</key>
+	<string>無法讀取 Codex 的設定回應，未確認設定成功。</string>
+	<key>Could not save notification payload: %@</key>
+	<string>無法保存通知 payload：%@</string>
+	<key>Could not subscribe to device events.</key>
+	<string>無法訂閱裝置事件。</string>
+	<key>Current level %@</key>
+	<string>目前音量 %@</string>
+	<key>Detect Motion</key>
+	<string>偵測晃動</string>
+	<key>Detect Sound</key>
+	<string>偵測聲音</string>
+	<key>Device</key>
+	<string>裝置</string>
+	<key>Device accelerometer initialization failed</key>
+	<string>裝置的加速度計初始化失敗</string>
+	<key>Device authorization has not completed.</key>
+	<string>裝置尚未完成授權確認。</string>
+	<key>Device command was not acknowledged.</key>
+	<string>裝置指令未獲確認。</string>
+	<key>Device could not apply blink interval</key>
+	<string>裝置無法套用閃燈間隔</string>
+	<key>Device could not apply light colors</key>
+	<string>裝置無法套用燈號顏色</string>
+	<key>Device does not support this command. Update the box firmware.</key>
+	<string>裝置不支援目前指令，請更新 box 韌體。</string>
+	<key>Device firmware version mismatch</key>
+	<string>裝置韌體版本不符</string>
+	<key>Device microphone initialization failed</key>
+	<string>裝置的麥克風初始化失敗</string>
+	<key>Disconnect</key>
+	<string>斷線</string>
+	<key>Disconnected</key>
+	<string>已斷線</string>
+	<key>Disconnected; retrying in %@ seconds.</key>
+	<string>連線中斷，%@ 秒後重試。</string>
+	<key>Drag the white thumb to compare with the current level. The bar turns orange when the level exceeds the thumb.</key>
+	<string>拖曳白色拉桿比對目前音量；音量超過拉桿位置時立即轉橘色。</string>
+	<key>Encrypted Bluetooth connection is incomplete. Allow pairing if prompted.</key>
+	<string>藍牙加密連線尚未完成；若系統要求配對，請允許。</string>
+	<key>Enter an SSH host alias, such as srv, without spaces or connection options.</key>
+	<string>請輸入 SSH 主機別名，例如 srv；不含空白或連線參數。</string>
+	<key>Event: %@
+Command: %@</key>
+	<string>事件：%@
+程式：%@</string>
+	<key>Failed to read device events.</key>
+	<string>讀取裝置事件失敗。</string>
+	<key>Failed to send command.</key>
+	<string>傳送指令失敗。</string>
+	<key>First remove the old pairing saved by macOS.</key>
+	<string>請先清除 macOS 保留的舊配對。</string>
+	<key>General</key>
+	<string>一般</string>
+	<key>Green</key>
+	<string>綠色</string>
+	<key>Hook definition changed. Check it again and confirm trust.</key>
+	<string>Hook 定義已變更，請重新檢查並確認信任。</string>
+	<key>Hooks run only after you confirm trust. Reopen your Codex conversation after setup; restart Codex if the hooks have not loaded. Keep AIBox running and click a notification to open its conversation. Stop marks stop processing; other hooks may still request continuation.</key>
+	<string>Hook 需確認信任後才會執行。設定後請重新開啟 Codex 對話；若尚未載入，請自行重啟 Codex。保持 AIBox 執行，收到通知後點擊該筆即可開啟對應對話。Stop 表示進入停止處理；其他 Hook 仍可能要求續跑。</string>
+	<key>I see %@</key>
+	<string>我看到%@</string>
+	<key>Identify</key>
+	<string>辨識這台</string>
+	<key>Identify Again</key>
+	<string>重新辨識</string>
+	<key>Identify Your AIBox</key>
+	<string>確認你的 AIBox</string>
+	<key>Idle</key>
+	<string>待機</string>
+	<key>Idle light</key>
+	<string>待機燈號</string>
+	<key>In %@d %@h</key>
+	<string>%@天%@小時後</string>
+	<key>In %@h %@m</key>
+	<string>%@小時%@分後</string>
+	<key>In %@m</key>
+	<string>%@分後</string>
+	<key>Invalid notification format; type, thread-id and turn-id are required.</key>
+	<string>通知格式不符，需包含 type、thread-id 與 turn-id。</string>
+	<key>Language</key>
+	<string>語系</string>
+	<key>Language changes take effect immediately and are saved automatically.</key>
+	<string>語系切換立即生效，並自動儲存。</string>
+	<key>Last notification: %@</key>
+	<string>最後收到通知：%@</string>
+	<key>Light Colors</key>
+	<string>燈號顏色</string>
+	<key>Lights</key>
+	<string>燈號</string>
+	<key>Loading…</key>
+	<string>讀取中…</string>
+	<key>Manage the paired AIBox or choose another device.</key>
+	<string>管理目前配對的 AIBox，或選擇另一台裝置。</string>
+	<key>Nearby AIBox devices</key>
+	<string>附近的 AIBox</string>
+	<key>No acknowledgment from AIBox. Make sure the app is running.</key>
+	<string>未收到 AIBox 確認，請確認 App 正在執行。</string>
+	<key>No devices found</key>
+	<string>尚未找到裝置</string>
+	<key>No notifications</key>
+	<string>尚無通知</string>
+	<key>No notifications received yet.</key>
+	<string>尚未收到通知。</string>
+	<key>No remembered device</key>
+	<string>尚未記住裝置</string>
+	<key>Not configured</key>
+	<string>未設定</string>
+	<key>Not connected</key>
+	<string>尚未連線</string>
+	<key>Notification transfer failed.</key>
+	<string>通知傳輸失敗。</string>
+	<key>Notifications</key>
+	<string>通知</string>
+	<key>Open Bluetooth Settings</key>
+	<string>開啟藍牙設定</string>
+	<key>Open notifications by shaking. This does not affect shaking for 2 seconds at startup to reset pairing.</key>
+	<string>控制晃動開啟通知；不影響開機搖晃 2 秒重新配對。</string>
+	<key>Open notifications with sudden sounds such as clapping.</key>
+	<string>控制拍手等突發聲音開啟通知。</string>
+	<key>Permission request</key>
+	<string>授權請求</string>
+	<key>Permission request light</key>
+	<string>授權請求燈號</string>
+	<key>Quit</key>
+	<string>結束</string>
+	<key>Reading Codex settings…</key>
+	<string>正在讀取 Codex 設定…</string>
+	<key>Receive PermissionRequest notifications</key>
+	<string>接收 PermissionRequest（授權請求通知）</string>
+	<key>Receive question and option prompts</key>
+	<string>接收問答提醒（等待回答／選擇方案）</string>
+	<key>Receive response stop, permission and question alerts from one SSH host. Your Mac must remain online.</key>
+	<string>接收一台 SSH 主機的回覆停止、授權請求及問答提醒。Mac 必須保持在線。</string>
+	<key>Recent notifications (up to 20)</key>
+	<string>最近通知（最多 20 筆）</string>
+	<key>Reconnect</key>
+	<string>重新連線</string>
+	<key>Red</key>
+	<string>紅色</string>
+	<key>Remembered AIBox not found. Check its power and reconnect.</key>
+	<string>找不到已記住的 AIBox；請確認供電，再重新連線。</string>
+	<key>Remembered: %@. Replaced only after confirming the new device's color.</key>
+	<string>已記住：%@；選對新裝置的顏色後才會更換。</string>
+	<key>Remote</key>
+	<string>遠端</string>
+	<key>Remote SSH host</key>
+	<string>遠端 SSH 主機</string>
+	<key>Reset time</key>
+	<string>重置時間</string>
+	<key>Reset time unknown</key>
+	<string>重置時間未知</string>
+	<key>Resetting soon</key>
+	<string>即將重置</string>
+	<key>Response finished</key>
+	<string>回覆已結束</string>
+	<key>Response stop light</key>
+	<string>回覆停止燈號</string>
+	<key>Response stop notifications are received automatically. Toggle other alerts individually and view the latest 20 notifications in the menu bar.</key>
+	<string>回覆停止通知會自動接收。其他提醒可個別開關，最近 20 筆通知可從選單列查看。</string>
+	<key>Response stop: %@
+Permission requests: %@
+Questions: %@
+Setup status does not confirm notification delivery.</key>
+	<string>回覆停止：%@
+授權請求：%@
+問答提醒：%@
+設定狀態不代表已收到通知。</string>
+	<key>Response stopped</key>
+	<string>回覆停止</string>
+	<key>SSH host alias, e.g. srv</key>
+	<string>SSH 主機別名，例如 srv</string>
+	<key>Save and Connect</key>
+	<string>儲存並連線</string>
+	<key>Saving hook trust confirmation…</key>
+	<string>正在記錄此 Hook 的信任確認…</string>
+	<key>Search Again</key>
+	<string>重新搜尋</string>
+	<key>Select a device, then click Identify.</key>
+	<string>請先選擇裝置，再按「辨識這台」。</string>
+	<key>Send Codex response and question alerts to AIBox.</key>
+	<string>將 Codex 的回覆與詢問提醒傳到 AIBox。</string>
+	<key>Sensors</key>
+	<string>感應</string>
+	<key>Set Up Codex</key>
+	<string>設定 Codex</string>
+	<key>Set idle and alert colors. Lights reflect the latest unopened notification; questions use the permission request colors.</key>
+	<string>設定待機與提醒的顏色。燈號對應最新尚未開啟的通知；等待回答沿用授權請求燈色。</string>
+	<key>Setting up response stop, permission and question alerts…</key>
+	<string>正在設定回覆停止、授權請求與問答提醒…</string>
+	<key>Settings are overridden by another level. Hook activation is incomplete.</key>
+	<string>設定被其他層級覆蓋，尚未完成 Hook 啟用。</string>
+	<key>Settings…</key>
+	<string>設定…</string>
+	<key>Show each color for 0.1–10 seconds for response stop and permission alerts.</key>
+	<string>每個顏色顯示 0.1～10 秒，適用於回覆停止與授權請求。</string>
+	<key>Sound Adjustment</key>
+	<string>收音調整</string>
+	<key>Sound detection is off</key>
+	<string>聲音偵測已關閉</string>
+	<key>Sound sensitivity</key>
+	<string>收音敏感度</string>
+	<key>Start AIBox first (connect)</key>
+	<string>請先啟動 AIBox（connect）</string>
+	<key>Steady</key>
+	<string>恆亮</string>
+	<key>The device did not return service information.</key>
+	<string>裝置未回覆服務資訊。</string>
+	<key>The notification socket path is occupied by another file.</key>
+	<string>通知通道的位置已被其他檔案占用。</string>
+	<key>The remote host returned an invalid notification path.</key>
+	<string>遠端傳回的通知路徑無效。</string>
+	<key>The white thumb sets the threshold; the fill shows the current level. The color changes as you cross the level, so you can adjust while listening.</key>
+	<string>白色拉桿是設定位置，填色是目前音量。拖過音量交界時立即變色，方便邊聽邊調整。</string>
+	<key>This Mac does not support BLE</key>
+	<string>此 Mac 不支援 BLE</string>
+	<key>This box is paired with another host. Unpair it first or shake continuously for 2 seconds after powering on.</key>
+	<string>這台 box 已綁定其他主機；請先解除配對，或開機後持續搖晃 2 秒。</string>
+	<key>This event is not a conversation notification supported by AIBox.</key>
+	<string>此事件不是 AIBox 支援的對話通知。</string>
+	<key>This notification has no conversation ID to open.</key>
+	<string>此通知缺少可開啟的對話 ID。</string>
+	<key>Threshold %@</key>
+	<string>設定 %@</string>
+	<key>Threshold %@, %@</key>
+	<string>設定 %@，%@</string>
+	<key>Trust and Enable</key>
+	<string>信任並啟用</string>
+	<key>Trust and enable AIBox conversation notification hooks?</key>
+	<string>信任並啟用 AIBox 對話通知 Hook？</string>
+	<key>Unknown error</key>
+	<string>未知錯誤</string>
+	<key>Unpair</key>
+	<string>解除配對</string>
+	<key>Untrusted notification hooks were not enabled. Previously enabled hooks are unchanged.</key>
+	<string>尚未信任的通知 Hook 未啟用；原本已啟用的 Hook 不受影響。</string>
+	<key>Uses your SSH keys and trusted hosts. Installs the remote notification script on connection, retries after disconnection, and reconnects when AIBox starts. Requires Python 3.
+
+For first use, configure and trust the hook in remote Codex using the command below. Reopen the remote conversation after setup.</key>
+	<string>沿用 SSH 金鑰及已信任的主機。連線時安裝遠端通知腳本，斷線後自動重試；下次開啟 AIBox 會恢復連線。需 Python 3。
+
+首次使用還需在遠端 Codex 設定並信任 Hook，指令如下。完成設定後請重新開啟遠端對話。</string>
+	<key>Waiting for box confirmation…</key>
+	<string>正在等待 box 確認…</string>
+	<key>Waiting for sound…</key>
+	<string>等待收音…</string>
+	<key>Weekly TOKEN usage</key>
+	<string>周 TOKEN 用量</string>
+	<key>When disabled, new question prompts will not be added or change the light. Existing notifications and raw logs are retained.</key>
+	<string>關閉後不新增問答提醒或切換燈號；既有清單及原始通知紀錄保留。</string>
+	<key>Which color is the box flashing?</key>
+	<string>你看到 box 閃爍哪個顏色？</string>
+	<key>aibox-notify was not found in the app. Rebuild AIBox.</key>
+	<string>找不到 App 內的 aibox-notify，請重新建置 AIBox。</string>
+	<key>box could not generate an identification color. Identify again.</key>
+	<string>box 無法產生辨識顏色，請重新辨識。</string>
+	<key>box could not save pairing. Reconnect and try again.</key>
+	<string>box 無法儲存配對，請重新連線後重試。</string>
+	<key>box: %@ Reconnecting in 3 seconds…</key>
+	<string>box：%@ 3 秒後自動重連…</string>
+	<key>box: Color confirmation required; displaying identification color…</key>
+	<string>box：需要確認燈色，正在讓 box 顯示顏色…</string>
+	<key>box: Color mismatch; device not saved. Identify again or choose another device.</key>
+	<string>box：顏色不符，尚未記住；請重新辨識或選擇另一台。</string>
+	<key>box: Connected</key>
+	<string>box：已連線</string>
+	<key>box: Connecting…</key>
+	<string>box：連線中…</string>
+	<key>box: Establishing encrypted Bluetooth connection. Allow pairing if prompted.</key>
+	<string>box：建立藍牙加密連線；若系統要求配對，請允許。</string>
+	<key>box: Mac Bluetooth is off</key>
+	<string>box：Mac 藍牙已關閉</string>
+	<key>box: No device found. Check its power and search again.</key>
+	<string>box：找不到裝置，請確認供電後重新搜尋。</string>
+	<key>box: No device selected. Use Choose / Change Device in Settings.</key>
+	<string>box：尚未選擇，請到設定按「選擇／更換 box…」</string>
+	<key>box: Not connected</key>
+	<string>box：尚未連線</string>
+	<key>box: Observe the flashing color on the physical box and select it in the window.</key>
+	<string>box：請看實體 box 閃爍的顏色，並在視窗中選擇。</string>
+	<key>box: Pairing confirmed; syncing lights…</key>
+	<string>box：已確認配對，正在同步燈號…</string>
+	<key>box: Searching for nearby devices…</key>
+	<string>box：搜尋附近裝置中…</string>
+	<key>box: Searching for remembered device…</key>
+	<string>box：搜尋已記住的裝置中…</string>
+	<key>box: Select a device, then click Identify.</key>
+	<string>box：請選擇裝置，再按「辨識這台」。</string>
+	<key>box: Showing identification color again…</key>
+	<string>box：正在重新顯示辨識顏色…</string>
+	<key>box: Switching connections…</key>
+	<string>box：正在切換連線…</string>
+	<key>box: Unpaired; ready to pair with another host.</key>
+	<string>box：已解除配對，可由其他主機重新配對。</string>
+	<key>box: Unpairing…</key>
+	<string>box：正在解除配對…</string>
+	<key>box: Verifying device…</key>
+	<string>box：確認裝置中…</string>
+	<key>box: Waiting for Bluetooth…</key>
+	<string>box：等待藍牙就緒…</string>
+	<key>box: Waiting for color confirmation and pairing to be saved…</key>
+	<string>box：等待 box 確認顏色並儲存配對…</string>
+	<key>box: Waiting for remembered AIBox; it will connect automatically when powered on…</key>
+	<string>box：等待已記住的 AIBox 上線，開機後會自動連線…</string>
+	<key>macOS could not open the Codex conversation. Make sure Codex App is installed.</key>
+	<string>macOS 無法開啟 Codex 對話，請確認 Codex App 已安裝。</string>
+	<key>macOS could not open the Codex conversation. This notification remains unopened.</key>
+	<string>macOS 無法開啟 Codex 對話；此通知仍保留為待開啟。</string>
+</dict>
+</plist>

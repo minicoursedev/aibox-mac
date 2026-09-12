@@ -11,13 +11,14 @@ final class BoxPairingWindow: NSWindowController, NSWindowDelegate {
     private let devices = NSPopUpButton(frame: .zero, pullsDown: false)
     private let status = NSTextField(wrappingLabelWithString: "")
     private let savedDevice = NSTextField(wrappingLabelWithString: "")
-    private let prompt = NSTextField(wrappingLabelWithString: "請先選擇裝置，再按「辨識這台」。")
+    private let prompt = NSTextField(wrappingLabelWithString: String(localized: "Select a device, then click Identify.", bundle: AppLanguage.bundle))
     private var identifyButton: NSButton!
     private var retryButton: NSButton!
     private var searchButton: NSButton!
     private var bluetoothSettingsButton: NSButton!
     private var answers: [NSButton] = []
     private var currentState: BoxPairingState?
+    private var refreshStaticText: (() -> Void)?
 
     init(onSearch: @escaping () -> Void, onSelect: @escaping (UUID) -> Void,
          onAnswer: @escaping (BoxPairingColor) -> Void, onRetry: @escaping () -> Void,
@@ -29,23 +30,23 @@ final class BoxPairingWindow: NSWindowController, NSWindowDelegate {
         self.onCancel = onCancel
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 520, height: 470),
                               styleMask: [.titled, .closable], backing: .buffered, defer: false)
-        window.title = "選擇 AIBox"
+        window.title = String(localized: "Choose AIBox", bundle: AppLanguage.bundle)
         window.isReleasedWhenClosed = false
         super.init(window: window)
         window.delegate = self
 
-        let title = NSTextField(labelWithString: "確認你的 AIBox")
+        let title = NSTextField(labelWithString: String(localized: "Identify Your AIBox", bundle: AppLanguage.bundle))
         title.font = .systemFont(ofSize: 21, weight: .semibold)
         let description = NSTextField(wrappingLabelWithString:
-            "選一台 box，觀察它閃爍的顏色，再選出你看到的顏色。確認後，這台 Mac 會記住並只連回這台 box。")
+            String(localized: "Choose a box, observe its flashing color, then select the color you see. After confirmation, this Mac will remember and reconnect only to that box.", bundle: AppLanguage.bundle))
         description.textColor = .secondaryLabelColor
         savedDevice.textColor = .secondaryLabelColor
         savedDevice.font = .systemFont(ofSize: 12)
-        devices.setAccessibilityLabel("附近的 AIBox")
+        devices.setAccessibilityLabel(String(localized: "Nearby AIBox devices", bundle: AppLanguage.bundle))
         devices.target = self
         devices.action = #selector(deviceChanged)
         devices.widthAnchor.constraint(equalToConstant: 280).isActive = true
-        identifyButton = NSButton(title: "辨識這台", target: self, action: #selector(identify))
+        identifyButton = NSButton(title: String(localized: "Identify", bundle: AppLanguage.bundle), target: self, action: #selector(identify))
         identifyButton.bezelStyle = .rounded
         let choiceRow = NSStackView(views: [devices, identifyButton])
         choiceRow.spacing = 12
@@ -62,21 +63,21 @@ final class BoxPairingWindow: NSWindowController, NSWindowDelegate {
             button.image?.isTemplate = false
             button.imagePosition = .imageLeading
             button.widthAnchor.constraint(equalToConstant: 100).isActive = true
-            button.setAccessibilityLabel("我看到\(color.label)")
+            button.setAccessibilityLabel(String(localized: "I see \(String(color.label))", bundle: AppLanguage.bundle))
             answers.append(button)
         }
         let answerRow = NSStackView(views: answers)
         answerRow.spacing = 12
         status.font = .systemFont(ofSize: 12)
         status.textColor = .secondaryLabelColor
-        searchButton = NSButton(title: "重新搜尋", target: self, action: #selector(search))
-        retryButton = NSButton(title: "重新辨識", target: self, action: #selector(retry))
-        let cancel = NSButton(title: "取消", target: self, action: #selector(cancel))
+        searchButton = NSButton(title: String(localized: "Search Again", bundle: AppLanguage.bundle), target: self, action: #selector(search))
+        retryButton = NSButton(title: String(localized: "Identify Again", bundle: AppLanguage.bundle), target: self, action: #selector(retry))
+        let cancel = NSButton(title: String(localized: "Cancel", bundle: AppLanguage.bundle), target: self, action: #selector(cancel))
         cancel.keyEquivalent = "\u{1b}"
         for button in [searchButton!, retryButton!, cancel] { button.bezelStyle = .rounded }
         let actions = NSStackView(views: [searchButton, retryButton, cancel])
         actions.spacing = 10
-        bluetoothSettingsButton = NSButton(title: "開啟藍牙設定", target: self, action: #selector(openBluetoothSettings))
+        bluetoothSettingsButton = NSButton(title: String(localized: "Open Bluetooth Settings", bundle: AppLanguage.bundle), target: self, action: #selector(openBluetoothSettings))
         bluetoothSettingsButton.bezelStyle = .rounded
         bluetoothSettingsButton.isHidden = true
         let stack = NSStackView(views: [title, description, savedDevice, choiceRow, prompt, answerRow, status, bluetoothSettingsButton, actions])
@@ -92,10 +93,33 @@ final class BoxPairingWindow: NSWindowController, NSWindowDelegate {
             stack.bottomAnchor.constraint(lessThanOrEqualTo: window.contentView!.bottomAnchor, constant: -24),
         ])
         for label in [description, savedDevice, status, prompt] { label.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true }
+        refreshStaticText = { [weak self, weak window] in
+            guard let self else { return }
+            window?.title = String(localized: "Choose AIBox", bundle: AppLanguage.bundle)
+            title.stringValue = String(localized: "Identify Your AIBox", bundle: AppLanguage.bundle)
+            description.stringValue = String(localized: "Choose a box, observe its flashing color, then select the color you see. After confirmation, this Mac will remember and reconnect only to that box.", bundle: AppLanguage.bundle)
+            self.identifyButton?.title = String(localized: "Identify", bundle: AppLanguage.bundle)
+            self.searchButton?.title = String(localized: "Search Again", bundle: AppLanguage.bundle)
+            self.retryButton?.title = String(localized: "Identify Again", bundle: AppLanguage.bundle)
+            self.bluetoothSettingsButton?.title = String(localized: "Open Bluetooth Settings", bundle: AppLanguage.bundle)
+            cancel.title = String(localized: "Cancel", bundle: AppLanguage.bundle)
+            self.devices.setAccessibilityLabel(String(localized: "Nearby AIBox devices", bundle: AppLanguage.bundle))
+            for button in self.answers {
+                guard let color = BoxPairingColor(rawValue: button.tag) else { continue }
+                button.title = color.label
+                button.setAccessibilityLabel(String(localized: "I see \(String(color.label))", bundle: AppLanguage.bundle))
+                button.image?.accessibilityDescription = color.label
+            }
+        }
         window.center()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    func refreshLanguage() {
+        refreshStaticText?()
+        if let currentState { update(currentState) }
+    }
 
     func update(_ state: BoxPairingState) {
         let completed = currentState?.isSelecting == true && !state.isSelecting
@@ -110,10 +134,10 @@ final class BoxPairingWindow: NSWindowController, NSWindowDelegate {
         if let index = state.devices.firstIndex(where: { $0.id == selection }) {
             devices.selectItem(at: index)
         }
-        if state.devices.isEmpty { devices.addItem(withTitle: "尚未找到裝置") }
+        if state.devices.isEmpty { devices.addItem(withTitle: String(localized: "No devices found", bundle: AppLanguage.bundle)) }
         savedDevice.stringValue = state.savedDeviceID.map {
-            "已記住：\(BoxDeviceChoice(id: $0).title)；選對新裝置的顏色後才會更換。"
-        } ?? "尚未記住裝置"
+            String(localized: "Remembered: \(String(BoxDeviceChoice(id: $0).title)). Replaced only after confirming the new device's color.", bundle: AppLanguage.bundle)
+        } ?? String(localized: "No remembered device", bundle: AppLanguage.bundle)
         status.stringValue = state.status
         bluetoothSettingsButton.isHidden = !state.needsSystemPairingReset
         updateControls()
@@ -130,10 +154,10 @@ final class BoxPairingWindow: NSWindowController, NSWindowDelegate {
         searchButton.isEnabled = !state.isBusy
         retryButton.isEnabled = state.canRetry && isCandidateSelected
         answers.forEach { $0.isEnabled = canAnswer }
-        prompt.stringValue = state.needsSystemPairingReset ? "請先清除 macOS 保留的舊配對。"
-            : canAnswer ? "你看到 box 閃爍哪個顏色？"
-            : state.canRetry && isCandidateSelected ? "請按「重新辨識」再確認顏色。"
-            : isCandidateSelected ? "正在等待 box 確認…" : "請先選擇裝置，再按「辨識這台」。"
+        prompt.stringValue = state.needsSystemPairingReset ? String(localized: "First remove the old pairing saved by macOS.", bundle: AppLanguage.bundle)
+            : canAnswer ? String(localized: "Which color is the box flashing?", bundle: AppLanguage.bundle)
+            : state.canRetry && isCandidateSelected ? String(localized: "Click Identify Again and confirm the color.", bundle: AppLanguage.bundle)
+            : isCandidateSelected ? String(localized: "Waiting for box confirmation…", bundle: AppLanguage.bundle) : String(localized: "Select a device, then click Identify.", bundle: AppLanguage.bundle)
     }
 
     @objc private func deviceChanged() { updateControls() }

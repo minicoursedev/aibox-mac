@@ -28,7 +28,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
     private let onSoundReading: (Int, Bool) -> Void
     private let pairing = BoxPairing()
     private var discovered: [CBPeripheral] = []
-    private var statusText = "box：尚未連線"
+    private var statusText = { String(localized: "box: Not connected", bundle: AppLanguage.bundle) }
     private var afterDisconnect: (() -> Void)?
     private var isConnected = false {
         didSet {
@@ -57,7 +57,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
                         isSelecting: pairing.isSelecting,
                         isBusy: afterDisconnect != nil || (board != nil && !session.canRetryIdentification),
                         needsSystemPairingReset: needsSystemPairingReset,
-                        status: statusText)
+                        status: statusText())
     }
 
     init(onStatus: @escaping (String) -> Void, onConnectionChange: @escaping (Bool) -> Void,
@@ -124,13 +124,13 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
     func retryIdentification() {
         guard pairing.candidateID != nil, session.canRetryIdentification else { return }
         if let command = session.beginIdentification() { send(command) }
-        reportStatus("box：正在重新顯示辨識顏色…")
+        reportStatus(String(localized: "box: Showing identification color again…", bundle: AppLanguage.bundle))
     }
     func confirmColor(_ color: BoxPairingColor) {
         guard afterDisconnect == nil, board?.state == .connected, pairingState.canConfirm,
               let command = session.answer(color) else { return }
         send(command)
-        reportStatus("box：等待 box 確認顏色並儲存配對…")
+        reportStatus(String(localized: "box: Waiting for color confirmation and pairing to be saved…", bundle: AppLanguage.bundle))
     }
     var canUnpair: Bool { isConnected && session.phase == .ready }
     func unpair() {
@@ -139,7 +139,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         central.stopScan()
         isConnected = false
         send(command)
-        reportStatus("box：正在解除配對…")
+        reportStatus(String(localized: "box: Unpairing…", bundle: AppLanguage.bundle))
     }
     func cancelSelection() {
         guard pairing.isSelecting else { return }
@@ -161,29 +161,35 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         central?.stopScan()
         if let board { central?.cancelPeripheralConnection(board) }
     }
-    private func reportStatus(_ value: String) {
+    func refreshLanguage() {
+        onStatus(statusText())
+        onPairingChange(pairingState)
+    }
+    private func reportStatus(_ value: @autoclosure @escaping () -> String) {
         statusText = value
-        onStatus(value)
+        onStatus(value())
         onPairingChange(pairingState)
     }
     private func scan() {
         guard !stopped else { return }
         guard central.state == .poweredOn else { centralManagerDidUpdateState(central); return }
         guard pairing.isSelecting || pairing.savedDeviceID != nil else {
-            reportStatus("box：尚未選擇，請到設定按「選擇／更換 box…」")
+            reportStatus(String(localized: "box: No device selected. Use Choose / Change Device in Settings.", bundle: AppLanguage.bundle))
             return
         }
-        reportStatus(pairing.isSelecting ? "box：搜尋附近裝置中…" : "box：搜尋已記住的裝置中…")
+        let selecting = pairing.isSelecting
+        reportStatus(selecting ? String(localized: "box: Searching for nearby devices…", bundle: AppLanguage.bundle) : String(localized: "box: Searching for remembered device…", bundle: AppLanguage.bundle))
         central.scanForPeripherals(withServices: [serviceID])
-        armTimeout("找不到已記住的 AIBox；請確認供電，再重新連線。", seconds: 30) { [weak self] in
+        armTimeout(String(localized: "Remembered AIBox not found. Check its power and reconnect.", bundle: AppLanguage.bundle), seconds: 30) { [weak self] in
             guard let self else { return }
             if self.pairing.isSelecting {
                 self.central.stopScan()
-                self.reportStatus(self.discovered.isEmpty
-                    ? "box：找不到裝置，請確認供電後重新搜尋。"
-                    : "box：請選擇裝置，再按「辨識這台」。")
+                let isEmpty = self.discovered.isEmpty
+                self.reportStatus(isEmpty
+                    ? String(localized: "box: No device found. Check its power and search again.", bundle: AppLanguage.bundle)
+                    : String(localized: "box: Select a device, then click Identify.", bundle: AppLanguage.bundle))
             } else {
-                self.reportStatus("box：等待已記住的 AIBox 上線，開機後會自動連線…")
+                self.reportStatus(String(localized: "box: Waiting for remembered AIBox; it will connect automatically when powered on…", bundle: AppLanguage.bundle))
             }
         }
     }
@@ -192,8 +198,8 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         board = peripheral
         peripheral.delegate = self
         central.stopScan()
-        reportStatus("box：連線中…")
-        armTimeout("連線逾時。", seconds: 15)
+        reportStatus(String(localized: "box: Connecting…", bundle: AppLanguage.bundle))
+        armTimeout(String(localized: "Connection timed out.", bundle: AppLanguage.bundle), seconds: 15)
         central.connect(peripheral)
     }
     private func clearSession() {
@@ -218,7 +224,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         timeout?.invalidate()
         guard let board else { clearSession(); action(); return }
         afterDisconnect = action
-        reportStatus("box：正在切換連線…")
+        reportStatus(String(localized: "box: Switching connections…", bundle: AppLanguage.bundle))
         if board.state == .connected, session.isIdentifyingChoice, commandCharacteristic != nil {
             send("X")
             armTimeout("", onTimeout: { [weak self] in self?.requestDisconnect() })
@@ -240,16 +246,16 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         clearSession()
         action?()
     }
-    private func armTimeout(_ message: String, seconds: TimeInterval = 5, onTimeout: (() -> Void)? = nil) {
+    private func armTimeout(_ message: @autoclosure @escaping () -> String, seconds: TimeInterval = 5, onTimeout: (() -> Void)? = nil) {
         timeout?.invalidate()
         timeout = Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) { [weak self] _ in
             MainActor.assumeIsolated {
                 if let onTimeout { onTimeout() }
-                else { self?.fail(message, retry: true) }
+                else { self?.fail(message(), retry: true) }
             }
         }
     }
-    private func fail(_ message: String, retry: Bool = false, error: Error? = nil) {
+    private func fail(_ message: @autoclosure @escaping () -> String, retry: Bool = false, error: Error? = nil) {
         if let board, BoxPairing.requiresSystemPairingReset(error) {
             showSystemPairingReset(for: board)
             return
@@ -258,7 +264,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
            !needsSystemPairingReset, central.state == .poweredOn {
             disconnectThen { [weak self] in
                 guard let self, !self.stopped else { return }
-                self.reportStatus("box：\(message) 3 秒後自動重連…")
+                self.reportStatus(String(localized: "box: \(String(message())) Reconnecting in 3 seconds…", bundle: AppLanguage.bundle))
                 self.armTimeout("", seconds: 3) { [weak self] in self?.scan() }
             }
             return
@@ -268,7 +274,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         let previous = board
         clearSession()
         if let previous { central.cancelPeripheralConnection(previous) }
-        reportStatus("box：\(message)")
+        reportStatus("box: \(message())")
     }
     private func showSystemPairingReset(for peripheral: CBPeripheral) {
         needsSystemPairingReset = true
@@ -276,7 +282,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         if !discovered.contains(where: { $0.identifier == peripheral.identifier }) {
             discovered.append(peripheral)
         }
-        fail("\(BoxDeviceChoice(id: peripheral.identifier).title) 已清除配對，但 macOS 仍保留舊配對。請在「系統設定 → 藍牙」對 AIBox 選擇「忘記此裝置設定」，再回來按「重新搜尋」並確認燈色。")
+        fail(String(localized: "\(String(BoxDeviceChoice(id: peripheral.identifier).title)) cleared its pairing, but macOS still has the old pairing. In System Settings → Bluetooth, choose Forget This Device for AIBox, then return, click Search Again and confirm the light color.", bundle: AppLanguage.bundle))
     }
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state != .poweredOn, afterDisconnect != nil { completeDisconnect() }
@@ -284,10 +290,10 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         case .poweredOn:
             stopped = false
             if board == nil { scan() }
-        case .unauthorized: fail("未獲藍牙權限；請在系統設定允許 AIBox 使用藍牙。")
-        case .poweredOff: clearSession(); reportStatus("box：Mac 藍牙已關閉")
-        case .unsupported: fail("此 Mac 不支援 BLE")
-        default: clearSession(); reportStatus("box：等待藍牙就緒…")
+        case .unauthorized: fail(String(localized: "Bluetooth access denied. Allow AIBox to use Bluetooth in System Settings.", bundle: AppLanguage.bundle))
+        case .poweredOff: clearSession(); reportStatus(String(localized: "box: Mac Bluetooth is off", bundle: AppLanguage.bundle))
+        case .unsupported: fail(String(localized: "This Mac does not support BLE", bundle: AppLanguage.bundle))
+        default: clearSession(); reportStatus(String(localized: "box: Waiting for Bluetooth…", bundle: AppLanguage.bundle))
         }
     }
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
@@ -306,7 +312,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
     }
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         guard board === peripheral, afterDisconnect == nil else { return }
-        armTimeout("裝置未回覆服務資訊。")
+        armTimeout(String(localized: "The device did not return service information.", bundle: AppLanguage.bundle))
         peripheral.discoverServices([serviceID])
     }
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
@@ -316,7 +322,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
             showSystemPairingReset(for: peripheral)
             return
         }
-        fail("連線失敗。", retry: true)
+        fail(String(localized: "Connection failed.", bundle: AppLanguage.bundle), retry: true)
     }
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         guard board === peripheral else { return }
@@ -331,7 +337,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         guard board === peripheral, afterDisconnect == nil else { return }
         guard error == nil, let service = peripheral.services?.first(where: { $0.uuid == serviceID }) else {
-            fail("找不到 AIBox 通訊服務。", retry: error != nil, error: error); return
+            fail(String(localized: "AIBox communication service not found.", bundle: AppLanguage.bundle), retry: error != nil, error: error); return
         }
         peripheral.discoverCharacteristics([commandID, eventID], for: service)
     }
@@ -340,44 +346,45 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
         guard error == nil,
               let rx = service.characteristics?.first(where: { $0.uuid == commandID }), rx.properties.contains(.write),
               let tx = service.characteristics?.first(where: { $0.uuid == eventID }), tx.properties.contains(.notify) else {
-            fail("AIBox 通訊特徵不符。", retry: error != nil, error: error); return
+            fail(String(localized: "AIBox communication characteristics do not match.", bundle: AppLanguage.bundle), retry: error != nil, error: error); return
         }
         commandCharacteristic = rx
-        reportStatus("box：建立藍牙加密連線；若系統要求配對，請允許。")
-        armTimeout("藍牙加密連線尚未完成；若系統要求配對，請允許。", seconds: 60)
+        reportStatus(String(localized: "box: Establishing encrypted Bluetooth connection. Allow pairing if prompted.", bundle: AppLanguage.bundle))
+        armTimeout(String(localized: "Encrypted Bluetooth connection is incomplete. Allow pairing if prompted.", bundle: AppLanguage.bundle), seconds: 60)
         peripheral.setNotifyValue(true, for: tx)
     }
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         guard board === peripheral, afterDisconnect == nil, characteristic.uuid == eventID else { return }
         guard error == nil, characteristic.isNotifying else {
-            fail("無法訂閱裝置事件。", retry: error != nil, error: error); return
+            fail(String(localized: "Could not subscribe to device events.", bundle: AppLanguage.bundle), retry: error != nil, error: error); return
         }
-        reportStatus("box：確認裝置中…")
+        reportStatus(String(localized: "box: Verifying device…", bundle: AppLanguage.bundle))
         send(session.subscribed())
-        armTimeout("裝置尚未完成授權確認。", seconds: 15)
+        armTimeout(String(localized: "Device authorization has not completed.", bundle: AppLanguage.bundle), seconds: 15)
     }
     private func send(_ command: String) {
         guard let board, board.state == .connected, let commandCharacteristic else { return }
-        armTimeout("裝置指令未獲確認。")
+        armTimeout(String(localized: "Device command was not acknowledged.", bundle: AppLanguage.bundle))
         board.writeValue(Data((command + "\n").utf8), for: commandCharacteristic, type: .withResponse)
     }
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         guard board === peripheral else { return }
         if error != nil {
             if afterDisconnect != nil { requestDisconnect() }
-            else { fail("傳送指令失敗。", retry: true, error: error) }
+            else { fail(String(localized: "Failed to send command.", bundle: AppLanguage.bundle), retry: true, error: error) }
         }
     }
     private func reportReady() {
         guard let board else { return }
         if session.phase == .ready, session.isAuthorized, pairing.shouldReconnect(to: board.identifier) {
             isConnected = true
-            let lightStatus = session.confirmedPattern.map { " · \($0.label)已確認" } ?? ""
-            reportStatus("box：已連線" + lightStatus)
+            let confirmedPattern = session.confirmedPattern
+            let lightStatus = { confirmedPattern.map { String(localized: " · \(String($0.label)) confirmed", bundle: AppLanguage.bundle) } ?? "" }
+            reportStatus(String(localized: "box: Connected", bundle: AppLanguage.bundle) + lightStatus())
         } else if session.phase == .rejectedColor {
-            reportStatus("box：顏色不符，尚未記住；請重新辨識或選擇另一台。")
+            reportStatus(String(localized: "box: Color mismatch; device not saved. Identify again or choose another device.", bundle: AppLanguage.bundle))
         } else if session.isIdentificationVisible {
-            reportStatus("box：請看實體 box 閃爍的顏色，並在視窗中選擇。")
+            reportStatus(String(localized: "box: Observe the flashing color on the physical box and select it in the window.", bundle: AppLanguage.bundle))
         }
     }
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -388,23 +395,23 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
             return
         }
         guard error == nil, let data = characteristic.value else {
-            fail("讀取裝置事件失敗。", retry: error != nil, error: error); return
+            fail(String(localized: "Failed to read device events.", bundle: AppLanguage.bundle), retry: error != nil, error: error); return
         }
         for line in decoder.append(data) {
             if line.hasPrefix("MIC ") {
                 if let reading = session.soundReading(line) { onSoundReading(reading.peak, reading.meetsThreshold) }
                 continue
             }
-            if line == "ERR IMU" { fail("裝置的加速度計初始化失敗"); return }
-            if line == "ERR MIC" { fail("裝置的麥克風初始化失敗"); return }
-            if line == "ERR COMMAND" { fail("裝置不支援目前指令，請更新 box 韌體。"); return }
-            if line == "ERR COLOR" { fail("裝置無法套用燈號顏色"); return }
-            if line == "ERR INTERVAL" { fail("裝置無法套用閃燈間隔"); return }
-            if line.hasPrefix("AIBOX-") && line != BoxProtocol.identity { fail("裝置韌體版本不符"); return }
-            if line == "ERR OWNER" { fail("這台 box 已綁定其他主機；請先解除配對，或開機後持續搖晃 2 秒。"); return }
-            if line == "ERR SECURITY" { fail("無法建立安全配對，請重新連線。"); return }
-            if line == "ERR STORAGE" { fail("box 無法儲存配對，請重新連線後重試。"); return }
-            if line == "ERR RANDOM" { fail("box 無法產生辨識顏色，請重新辨識。"); return }
+            if line == "ERR IMU" { fail(String(localized: "Device accelerometer initialization failed", bundle: AppLanguage.bundle)); return }
+            if line == "ERR MIC" { fail(String(localized: "Device microphone initialization failed", bundle: AppLanguage.bundle)); return }
+            if line == "ERR COMMAND" { fail(String(localized: "Device does not support this command. Update the box firmware.", bundle: AppLanguage.bundle)); return }
+            if line == "ERR COLOR" { fail(String(localized: "Device could not apply light colors", bundle: AppLanguage.bundle)); return }
+            if line == "ERR INTERVAL" { fail(String(localized: "Device could not apply blink interval", bundle: AppLanguage.bundle)); return }
+            if line.hasPrefix("AIBOX-") && line != BoxProtocol.identity { fail(String(localized: "Device firmware version mismatch", bundle: AppLanguage.bundle)); return }
+            if line == "ERR OWNER" { fail(String(localized: "This box is paired with another host. Unpair it first or shake continuously for 2 seconds after powering on.", bundle: AppLanguage.bundle)); return }
+            if line == "ERR SECURITY" { fail(String(localized: "Could not establish secure pairing. Reconnect and try again.", bundle: AppLanguage.bundle)); return }
+            if line == "ERR STORAGE" { fail(String(localized: "box could not save pairing. Reconnect and try again.", bundle: AppLanguage.bundle)); return }
+            if line == "ERR RANDOM" { fail(String(localized: "box could not generate an identification color. Identify again.", bundle: AppLanguage.bundle)); return }
             if line == "RESET PAIRING" {
                 showSystemPairingReset(for: peripheral)
                 return
@@ -413,7 +420,7 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
                 pairing.forgetDevice()
                 stop()
                 clearSession()
-                reportStatus("box：已解除配對，可由其他主機重新配對。")
+                reportStatus(String(localized: "box: Unpaired; ready to pair with another host.", bundle: AppLanguage.bundle))
                 return
             }
             let next = session.receive(line)
@@ -422,12 +429,12 @@ final class BoxBluetoothClient: NSObject, @preconcurrency CBCentralManagerDelega
                 pairing.select(peripheral.identifier)
                 if !discovered.contains(where: { $0.identifier == peripheral.identifier }) { discovered.append(peripheral) }
                 if let command = session.beginIdentification() { send(command) }
-                reportStatus("box：需要確認燈色，正在讓 box 顯示顏色…")
+                reportStatus(String(localized: "box: Color confirmation required; displaying identification color…", bundle: AppLanguage.bundle))
                 continue
             }
             if pairing.isSelecting, session.didConfirmColor {
                 _ = pairing.confirmAuthorizedDevice(peripheral.identifier, session: session)
-                reportStatus("box：已確認配對，正在同步燈號…")
+                reportStatus(String(localized: "box: Pairing confirmed; syncing lights…", bundle: AppLanguage.bundle))
             }
             if session.pendingCommand == nil { timeout?.invalidate() }
             reportReady()

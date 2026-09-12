@@ -33,19 +33,19 @@ final class LightColorSettingsView: NSStackView {
         alignment = .leading
         spacing = 8
 
-        let heading = NSTextField(labelWithString: "燈號顏色")
+        let heading = NSTextField(labelWithString: String(localized: "Light Colors", bundle: AppLanguage.bundle))
         heading.font = .systemFont(ofSize: 13, weight: .semibold)
         addArrangedSubview(heading)
-        addRow("待機", slots: [.idle])
-        addRow("回覆停止", slots: [.completion, .completionAlternate])
-        addRow("授權請求", slots: [.permission, .permissionAlternate])
-        let intervalLabel = NSTextField(labelWithString: "交替間隔")
-        intervalLabel.widthAnchor.constraint(equalToConstant: 92).isActive = true
+        addRow(String(localized: "Idle", bundle: AppLanguage.bundle), slots: [.idle])
+        addRow(String(localized: "Response stopped", bundle: AppLanguage.bundle), slots: [.completion, .completionAlternate])
+        addRow(String(localized: "Permission request", bundle: AppLanguage.bundle), slots: [.permission, .permissionAlternate])
+        let intervalLabel = NSTextField(labelWithString: String(localized: "Color interval", bundle: AppLanguage.bundle))
+        intervalLabel.widthAnchor.constraint(equalToConstant: 130).isActive = true
         let slider = NSSlider(value: Double(min(100, max(1, intervalTenths))) / 10,
                               minValue: 0.1, maxValue: 10,
                               target: self, action: #selector(intervalChanged(_:)))
         slider.isContinuous = true
-        slider.setAccessibilityLabel("交替間隔，每個顏色顯示秒數")
+        slider.setAccessibilityLabel(String(localized: "Color interval, seconds per color", bundle: AppLanguage.bundle))
         slider.widthAnchor.constraint(equalToConstant: 180).isActive = true
         intervalValue.font = .monospacedDigitSystemFont(ofSize: 12, weight: .regular)
         intervalValue.widthAnchor.constraint(equalToConstant: 58).isActive = true
@@ -55,11 +55,11 @@ final class LightColorSettingsView: NSStackView {
         intervalRow.alignment = .centerY
         intervalRow.spacing = 10
         addArrangedSubview(intervalRow)
-        let intervalHint = NSTextField(labelWithString: "每個顏色顯示 0.1～10 秒，適用於回覆停止與授權請求。")
+        let intervalHint = NSTextField(labelWithString: String(localized: "Show each color for 0.1–10 seconds for response stop and permission alerts.", bundle: AppLanguage.bundle))
         intervalHint.font = .systemFont(ofSize: 11)
         intervalHint.textColor = .secondaryLabelColor
         addArrangedSubview(intervalHint)
-        let hint = NSTextField(labelWithString: "點色塊開啟色環；顏色自動儲存，連線後套用至對應燈號。")
+        let hint = NSTextField(labelWithString: String(localized: "Click a swatch to open the color wheel. Colors are saved automatically and applied when connected.", bundle: AppLanguage.bundle))
         hint.font = .systemFont(ofSize: 11)
         hint.textColor = .secondaryLabelColor
         addArrangedSubview(hint)
@@ -69,7 +69,7 @@ final class LightColorSettingsView: NSStackView {
 
     private func addRow(_ title: String, slots: [BoxColorSlot]) {
         let label = NSTextField(labelWithString: title)
-        label.widthAnchor.constraint(equalToConstant: 92).isActive = true
+        label.widthAnchor.constraint(equalToConstant: 130).isActive = true
         let row = NSStackView(views: [label])
         row.orientation = .horizontal
         row.alignment = .centerY
@@ -86,13 +86,13 @@ final class LightColorSettingsView: NSStackView {
             well.target = self
             well.action = #selector(colorChanged(_:))
             well.isContinuous = true
-            well.setAccessibilityLabel("\(title)顏色\(index + 1)")
-            well.toolTip = "點擊以色環選擇\(title)顏色\(index + 1)"
+            well.setAccessibilityLabel(String(localized: "\(String(title)) color \(String(index + 1))", bundle: AppLanguage.bundle))
+            well.toolTip = String(localized: "Click to choose \(String(title)) color \(String(index + 1)) using the color wheel", bundle: AppLanguage.bundle)
             row.addArrangedSubview(well)
             well.widthAnchor.constraint(equalToConstant: 52).isActive = true
             well.heightAnchor.constraint(equalToConstant: 26).isActive = true
         }
-        let behavior = NSTextField(labelWithString: slots.count == 1 ? "恆亮" : "兩色交替")
+        let behavior = NSTextField(labelWithString: slots.count == 1 ? String(localized: "Steady", bundle: AppLanguage.bundle) : String(localized: "Alternating", bundle: AppLanguage.bundle))
         behavior.textColor = .secondaryLabelColor
         behavior.font = .systemFont(ofSize: 11)
         row.addArrangedSubview(behavior)
@@ -109,7 +109,7 @@ final class LightColorSettingsView: NSStackView {
     }
 
     private func updateIntervalLabel(_ tenths: Int) {
-        intervalValue.stringValue = String(format: "%.1f 秒", Double(tenths) / 10)
+        intervalValue.stringValue = String(format: String(localized: "%.1f s", bundle: AppLanguage.bundle), Double(tenths) / 10)
     }
 
     @objc private func intervalChanged(_ sender: NSSlider) {

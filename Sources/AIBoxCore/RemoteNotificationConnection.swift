@@ -5,7 +5,10 @@ import Foundation
 public final class RemoteNotificationConnection {
     public private(set) var isEnabled = false
     public var onStatus: ((String) -> Void)?
-    public private(set) var status = "尚未連線"
+    private var statusText = { String(localized: "Not connected", bundle: AppLanguage.bundle) }
+    public var status: String { statusText() }
+
+    public func refreshLanguage() { onStatus?(status) }
     private var host = ""
     private var process: Process?
     private var input: Pipe?
@@ -27,7 +30,7 @@ public final class RemoteNotificationConnection {
     public func connect(host: String) {
         disconnect()
         guard Self.validHost(host) else {
-            update("請輸入 SSH 主機別名，例如 srv；不含空白或連線參數。")
+            update(String(localized: "Enter an SSH host alias, such as srv, without spaces or connection options.", bundle: AppLanguage.bundle))
             return
         }
         self.host = host
@@ -47,12 +50,12 @@ public final class RemoteNotificationConnection {
         input = nil
         if let process, process.isRunning { process.terminate() }
         process = nil
-        update("已斷線")
+        update(String(localized: "Disconnected", bundle: AppLanguage.bundle))
     }
 
-    private func update(_ message: String) {
-        status = message
-        onStatus?(message)
+    private func update(_ message: @autoclosure @escaping () -> String) {
+        statusText = message
+        onStatus?(message())
     }
 
     private var options: [String] {
@@ -63,7 +66,8 @@ public final class RemoteNotificationConnection {
     }
 
     private func prepare() {
-        update("正在連線至 \(host)…")
+        let host = self.host
+        update(String(localized: "Connecting to \(String(host))…", bundle: AppLanguage.bundle))
         do {
             let packaged = Bundle.main.resourceURL?.appendingPathComponent("AIBoxMac_AIBoxCore.bundle")
             let resources = packaged.flatMap { Bundle(url: $0) } ?? Bundle.module
@@ -83,7 +87,7 @@ public final class RemoteNotificationConnection {
                 let socket = String(line.dropFirst("AIBOX_SOCKET=".count))
                 guard socket.hasPrefix("/"), socket.utf8.count < 100,
                       !socket.contains(":"), !socket.contains("\r") else {
-                    self.failed("遠端傳回的通知路徑無效。")
+                    self.failed(String(localized: "The remote host returned an invalid notification path.", bundle: AppLanguage.bundle))
                     return
                 }
                 self.startTunnel(socket: socket)
@@ -102,7 +106,8 @@ public final class RemoteNotificationConnection {
             if response.components(separatedBy: "\n").contains("AIBOX_READY") {
                 self.deadline?.cancel()
                 self.retryDelay = 2
-                self.update("已連線至 \(self.host)；等待遠端 Hook 通知。")
+                let host = self.host
+                self.update(String(localized: "Connected to \(String(host)); waiting for remote hook notifications.", bundle: AppLanguage.bundle))
             }
         }, finished: { [weak self] _ in
             self?.failed(response.replacingOccurrences(of: "AIBOX_READY", with: ""))
@@ -113,7 +118,8 @@ public final class RemoteNotificationConnection {
         guard isEnabled else { return }
         deadline?.cancel()
         let message = detail.trimmingCharacters(in: .whitespacesAndNewlines)
-        update("連線中斷，\(Int(retryDelay)) 秒後重試。" + (message.isEmpty ? "" : "\n" + String(message.suffix(600))))
+        let delay = Int(retryDelay)
+        update(String(localized: "Disconnected; retrying in \(String(delay)) seconds.", bundle: AppLanguage.bundle) + (message.isEmpty ? "" : "\n" + String(message.suffix(600))))
         let token = generation
         let work = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {

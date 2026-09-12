@@ -6,9 +6,9 @@ public enum BoxPairingColor: Int, CaseIterable {
 
     public var label: String {
         switch self {
-        case .red: return "紅色"
-        case .green: return "綠色"
-        case .blue: return "藍色"
+        case .red: return String(localized: "Red", bundle: AppLanguage.bundle)
+        case .green: return String(localized: "Green", bundle: AppLanguage.bundle)
+        case .blue: return String(localized: "Blue", bundle: AppLanguage.bundle)
         }
     }
 

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>
+
+Codex will send the conversation ID, turn ID, and final response, permission request, or questions and options to local AIBox. This program only receives notifications. It does not answer questions, approve or deny permissions, or request continuation.</key>
+	<string>
+
+Codex will send the conversation ID, turn ID, and final response, permission request, or questions and options to local AIBox. This program only receives notifications. It does not answer questions, approve or deny permissions, or request continuation.</string>
+	<key> · %@ confirmed</key>
+	<string> · %@ confirmed</string>
+	<key>%.1f s</key>
+	<string>%.1f s</string>
+	<key>%@
+%@
+Conversation: %@
+Click to open this conversation</key>
+	<string>%@
+%@
+Conversation: %@
+Click to open this conversation</string>
+	<key>%@ cleared its pairing, but macOS still has the old pairing. In System Settings → Bluetooth, choose Forget This Device for AIBox, then return, click Search Again and confirm the light color.</key>
+	<string>%@ cleared its pairing, but macOS still has the old pairing. In System Settings → Bluetooth, choose Forget This Device for AIBox, then return, click Search Again and confirm the light color.</string>
+	<key>%@ color %@</key>
+	<string>%@ color %@</string>
+	<key>AIBox Settings</key>
+	<string>AIBox Settings</string>
+	<key>AIBox communication characteristics do not match.</key>
+	<string>AIBox communication characteristics do not match.</string>
+	<key>AIBox communication service not found.</key>
+	<string>AIBox communication service not found.</string>
+	<key>AIBox could not start</key>
+	<string>AIBox could not start</string>
+	<key>AIBox has stopped.</key>
+	<string>AIBox has stopped.</string>
+	<key>AIBox is already running.</key>
+	<string>AIBox is already running.</string>
+	<key>AIBox: Running</key>
+	<string>AIBox: Running</string>
+	<key>AIBox: Running
+%@</key>
+	<string>AIBox: Running
+%@</string>
+	<key>Above threshold</key>
+	<string>Above threshold</string>
+	<key>Alternating</key>
+	<string>Alternating</string>
+	<key>Awaiting answer</key>
+	<string>Awaiting answer</string>
+	<key>Awaiting trust / activation</key>
+	<string>Awaiting trust / activation</string>
+	<key>Below threshold</key>
+	<string>Below threshold</string>
+	<key>Blue</key>
+	<string>Blue</string>
+	<key>Bluetooth access denied. Allow AIBox to use Bluetooth in System Settings.</key>
+	<string>Bluetooth access denied. Allow AIBox to use Bluetooth in System Settings.</string>
+	<key>Cancel</key>
+	<string>Cancel</string>
+	<key>Choose / Change Device…</key>
+	<string>Choose / Change Device…</string>
+	<key>Choose AIBox</key>
+	<string>Choose AIBox</string>
+	<key>Choose a box, observe its flashing color, then select the color you see. After confirmation, this Mac will remember and reconnect only to that box.</key>
+	<string>Choose a box, observe its flashing color, then select the color you see. After confirmation, this Mac will remember and reconnect only to that box.</string>
+	<key>Choose motion or sound to open notifications, and adjust the sound threshold live.</key>
+	<string>Choose motion or sound to open notifications, and adjust the sound threshold live.</string>
+	<key>Choose the display language for AIBox.</key>
+	<string>Choose the display language for AIBox.</string>
+	<key>Click Identify Again and confirm the color.</key>
+	<string>Click Identify Again and confirm the color.</string>
+	<key>Click a swatch to open the color wheel. Colors are saved automatically and applied when connected.</key>
+	<string>Click a swatch to open the color wheel. Colors are saved automatically and applied when connected.</string>
+	<key>Click to choose %@ color %@ using the color wheel</key>
+	<string>Click to choose %@ color %@ using the color wheel</string>
+	<key>Codex App or aibox-notify was not found. Check the installation and build.</key>
+	<string>Codex App or aibox-notify was not found. Check the installation and build.</string>
+	<key>Codex configuration executable not found. Make sure Codex App is installed.</key>
+	<string>Codex configuration executable not found. Make sure Codex App is installed.</string>
+	<key>Codex could not load hooks. Check the existing hook settings first.</key>
+	<string>Codex could not load hooks. Check the existing hook settings first.</string>
+	<key>Codex hooks are disabled. AIBox did not change this setting.</key>
+	<string>Codex hooks are disabled. AIBox did not change this setting.</string>
+	<key>Codex settings have not been checked.</key>
+	<string>Codex settings have not been checked.</string>
+	<key>Codex setup failed: %@</key>
+	<string>Codex setup failed: %@</string>
+	<key>Codex setup timed out. Reopen Settings to check the result.</key>
+	<string>Codex setup timed out. Reopen Settings to check the result.</string>
+	<key>Color interval</key>
+	<string>Color interval</string>
+	<key>Color interval, seconds per color</key>
+	<string>Color interval, seconds per color</string>
+	<key>Configured and trusted</key>
+	<string>Configured and trusted</string>
+	<key>Connected to %@; waiting for remote hook notifications.</key>
+	<string>Connected to %@; waiting for remote hook notifications.</string>
+	<key>Connecting to %@…</key>
+	<string>Connecting to %@…</string>
+	<key>Connection failed.</key>
+	<string>Connection failed.</string>
+	<key>Connection timed out.</key>
+	<string>Connection timed out.</string>
+	<key>Could Not Open Conversation</key>
+	<string>Could Not Open Conversation</string>
+	<key>Could not establish secure pairing. Reconnect and try again.</key>
+	<string>Could not establish secure pairing. Reconnect and try again.</string>
+	<key>Could not read the Codex settings response. Setup success is unconfirmed.</key>
+	<string>Could not read the Codex settings response. Setup success is unconfirmed.</string>
+	<key>Could not save notification payload: %@</key>
+	<string>Could not save notification payload: %@</string>
+	<key>Could not subscribe to device events.</key>
+	<string>Could not subscribe to device events.</string>
+	<key>Current level %@</key>
+	<string>Current level %@</string>
+	<key>Detect Motion</key>
+	<string>Detect Motion</string>
+	<key>Detect Sound</key>
+	<string>Detect Sound</string>
+	<key>Device</key>
+	<string>Device</string>
+	<key>Device accelerometer initialization failed</key>
+	<string>Device accelerometer initialization failed</string>
+	<key>Device authorization has not completed.</key>
+	<string>Device authorization has not completed.</string>
+	<key>Device command was not acknowledged.</key>
+	<string>Device command was not acknowledged.</string>
+	<key>Device could not apply blink interval</key>
+	<string>Device could not apply blink interval</string>
+	<key>Device could not apply light colors</key>
+	<string>Device could not apply light colors</string>
+	<key>Device does not support this command. Update the box firmware.</key>
+	<string>Device does not support this command. Update the box firmware.</string>
+	<key>Device firmware version mismatch</key>
+	<string>Device firmware version mismatch</string>
+	<key>Device microphone initialization failed</key>
+	<string>Device microphone initialization failed</string>
+	<key>Disconnect</key>
+	<string>Disconnect</string>
+	<key>Disconnected</key>
+	<string>Disconnected</string>
+	<key>Disconnected; retrying in %@ seconds.</key>
+	<string>Disconnected; retrying in %@ seconds.</string>
+	<key>Drag the white thumb to compare with the current level. The bar turns orange when the level exceeds the thumb.</key>
+	<string>Drag the white thumb to compare with the current level. The bar turns orange when the level exceeds the thumb.</string>
+	<key>Encrypted Bluetooth connection is incomplete. Allow pairing if prompted.</key>
+	<string>Encrypted Bluetooth connection is incomplete. Allow pairing if prompted.</string>
+	<key>Enter an SSH host alias, such as srv, without spaces or connection options.</key>
+	<string>Enter an SSH host alias, such as srv, without spaces or connection options.</string>
+	<key>Event: %@
+Command: %@</key>
+	<string>Event: %@
+Command: %@</string>
+	<key>Failed to read device events.</key>
+	<string>Failed to read device events.</string>
+	<key>Failed to send command.</key>
+	<string>Failed to send command.</string>
+	<key>First remove the old pairing saved by macOS.</key>
+	<string>First remove the old pairing saved by macOS.</string>
+	<key>General</key>
+	<string>General</string>
+	<key>Green</key>
+	<string>Green</string>
+	<key>Hook definition changed. Check it again and confirm trust.</key>
+	<string>Hook definition changed. Check it again and confirm trust.</string>
+	<key>Hooks run only after you confirm trust. Reopen your Codex conversation after setup; restart Codex if the hooks have not loaded. Keep AIBox running and click a notification to open its conversation. Stop marks stop processing; other hooks may still request continuation.</key>
+	<string>Hooks run only after you confirm trust. Reopen your Codex conversation after setup; restart Codex if the hooks have not loaded. Keep AIBox running and click a notification to open its conversation. Stop marks stop processing; other hooks may still request continuation.</string>
+	<key>I see %@</key>
+	<string>I see %@</string>
+	<key>Identify</key>
+	<string>Identify</string>
+	<key>Identify Again</key>
+	<string>Identify Again</string>
+	<key>Identify Your AIBox</key>
+	<string>Identify Your AIBox</string>
+	<key>Idle</key>
+	<string>Idle</string>
+	<key>Idle light</key>
+	<string>Idle light</string>
+	<key>In %@d %@h</key>
+	<string>In %@d %@h</string>
+	<key>In %@h %@m</key>
+	<string>In %@h %@m</string>
+	<key>In %@m</key>
+	<string>In %@m</string>
+	<key>Invalid notification format; type, thread-id and turn-id are required.</key>
+	<string>Invalid notification format; type, thread-id and turn-id are required.</string>
+	<key>Language</key>
+	<string>Language</string>
+	<key>Language changes take effect immediately and are saved automatically.</key>
+	<string>Language changes take effect immediately and are saved automatically.</string>
+	<key>Last notification: %@</key>
+	<string>Last notification: %@</string>
+	<key>Light Colors</key>
+	<string>Light Colors</string>
+	<key>Lights</key>
+	<string>Lights</string>
+	<key>Loading…</key>
+	<string>Loading…</string>
+	<key>Manage the paired AIBox or choose another device.</key>
+	<string>Manage the paired AIBox or choose another device.</string>
+	<key>Nearby AIBox devices</key>
+	<string>Nearby AIBox devices</string>
+	<key>No acknowledgment from AIBox. Make sure the app is running.</key>
+	<string>No acknowledgment from AIBox. Make sure the app is running.</string>
+	<key>No devices found</key>
+	<string>No devices found</string>
+	<key>No notifications</key>
+	<string>No notifications</string>
+	<key>No notifications received yet.</key>
+	<string>No notifications received yet.</string>
+	<key>No remembered device</key>
+	<string>No remembered device</string>
+	<key>Not configured</key>
+	<string>Not configured</string>
+	<key>Not connected</key>
+	<string>Not connected</string>
+	<key>Notification transfer failed.</key>
+	<string>Notification transfer failed.</string>
+	<key>Notifications</key>
+	<string>Notifications</string>
+	<key>Open Bluetooth Settings</key>
+	<string>Open Bluetooth Settings</string>
+	<key>Open notifications by shaking. This does not affect shaking for 2 seconds at startup to reset pairing.</key>
+	<string>Open notifications by shaking. This does not affect shaking for 2 seconds at startup to reset pairing.</string>
+	<key>Open notifications with sudden sounds such as clapping.</key>
+	<string>Open notifications with sudden sounds such as clapping.</string>
+	<key>Permission request</key>
+	<string>Permission request</string>
+	<key>Permission request light</key>
+	<string>Permission request light</string>
+	<key>Quit</key>
+	<string>Quit</string>
+	<key>Reading Codex settings…</key>
+	<string>Reading Codex settings…</string>
+	<key>Receive PermissionRequest notifications</key>
+	<string>Receive PermissionRequest notifications</string>
+	<key>Receive question and option prompts</key>
+	<string>Receive question and option prompts</string>
+	<key>Receive response stop, permission and question alerts from one SSH host. Your Mac must remain online.</key>
+	<string>Receive response stop, permission and question alerts from one SSH host. Your Mac must remain online.</string>
+	<key>Recent notifications (up to 20)</key>
+	<string>Recent notifications (up to 20)</string>
+	<key>Reconnect</key>
+	<string>Reconnect</string>
+	<key>Red</key>
+	<string>Red</string>
+	<key>Remembered AIBox not found. Check its power and reconnect.</key>
+	<string>Remembered AIBox not found. Check its power and reconnect.</string>
+	<key>Remembered: %@. Replaced only after confirming the new device's color.</key>
+	<string>Remembered: %@. Replaced only after confirming the new device's color.</string>
+	<key>Remote</key>
+	<string>Remote</string>
+	<key>Remote SSH host</key>
+	<string>Remote SSH host</string>
+	<key>Reset time</key>
+	<string>Reset time</string>
+	<key>Reset time unknown</key>
+	<string>Reset time unknown</string>
+	<key>Resetting soon</key>
+	<string>Resetting soon</string>
+	<key>Response finished</key>
+	<string>Response finished</string>
+	<key>Response stop light</key>
+	<string>Response stop light</string>
+	<key>Response stop notifications are received automatically. Toggle other alerts individually and view the latest 20 notifications in the menu bar.</key>
+	<string>Response stop notifications are received automatically. Toggle other alerts individually and view the latest 20 notifications in the menu bar.</string>
+	<key>Response stop: %@
+Permission requests: %@
+Questions: %@
+Setup status does not confirm notification delivery.</key>
+	<string>Response stop: %@
+Permission requests: %@
+Questions: %@
+Setup status does not confirm notification delivery.</string>
+	<key>Response stopped</key>
+	<string>Response stopped</string>
+	<key>SSH host alias, e.g. srv</key>
+	<string>SSH host alias, e.g. srv</string>
+	<key>Save and Connect</key>
+	<string>Save and Connect</string>
+	<key>Saving hook trust confirmation…</key>
+	<string>Saving hook trust confirmation…</string>
+	<key>Search Again</key>
+	<string>Search Again</string>
+	<key>Select a device, then click Identify.</key>
+	<string>Select a device, then click Identify.</string>
+	<key>Send Codex response and question alerts to AIBox.</key>
+	<string>Send Codex response and question alerts to AIBox.</string>
+	<key>Sensors</key>
+	<string>Sensors</string>
+	<key>Set Up Codex</key>
+	<string>Set Up Codex</string>
+	<key>Set idle and alert colors. Lights reflect the latest unopened notification; questions use the permission request colors.</key>
+	<string>Set idle and alert colors. Lights reflect the latest unopened notification; questions use the permission request colors.</string>
+	<key>Setting up response stop, permission and question alerts…</key>
+	<string>Setting up response stop, permission and question alerts…</string>
+	<key>Settings are overridden by another level. Hook activation is incomplete.</key>
+	<string>Settings are overridden by another level. Hook activation is incomplete.</string>
+	<key>Settings…</key>
+	<string>Settings…</string>
+	<key>Show each color for 0.1–10 seconds for response stop and permission alerts.</key>
+	<string>Show each color for 0.1–10 seconds for response stop and permission alerts.</string>
+	<key>Sound Adjustment</key>
+	<string>Sound Adjustment</string>
+	<key>Sound detection is off</key>
+	<string>Sound detection is off</string>
+	<key>Sound sensitivity</key>
+	<string>Sound sensitivity</string>
+	<key>Start AIBox first (connect)</key>
+	<string>Start AIBox first (connect)</string>
+	<key>Steady</key>
+	<string>Steady</string>
+	<key>The device did not return service information.</key>
+	<string>The device did not return service information.</string>
+	<key>The notification socket path is occupied by another file.</key>
+	<string>The notification socket path is occupied by another file.</string>
+	<key>The remote host returned an invalid notification path.</key>
+	<string>The remote host returned an invalid notification path.</string>
+	<key>The white thumb sets the threshold; the fill shows the current level. The color changes as you cross the level, so you can adjust while listening.</key>
+	<string>The white thumb sets the threshold; the fill shows the current level. The color changes as you cross the level, so you can adjust while listening.</string>
+	<key>This Mac does not support BLE</key>
+	<string>This Mac does not support BLE</string>
+	<key>This box is paired with another host. Unpair it first or shake continuously for 2 seconds after powering on.</key>
+	<string>This box is paired with another host. Unpair it first or shake continuously for 2 seconds after powering on.</string>
+	<key>This event is not a conversation notification supported by AIBox.</key>
+	<string>This event is not a conversation notification supported by AIBox.</string>
+	<key>This notification has no conversation ID to open.</key>
+	<string>This notification has no conversation ID to open.</string>
+	<key>Threshold %@</key>
+	<string>Threshold %@</string>
+	<key>Threshold %@, %@</key>
+	<string>Threshold %@, %@</string>
+	<key>Trust and Enable</key>
+	<string>Trust and Enable</string>
+	<key>Trust and enable AIBox conversation notification hooks?</key>
+	<string>Trust and enable AIBox conversation notification hooks?</string>
+	<key>Unknown error</key>
+	<string>Unknown error</string>
+	<key>Unpair</key>
+	<string>Unpair</string>
+	<key>Untrusted notification hooks were not enabled. Previously enabled hooks are unchanged.</key>
+	<string>Untrusted notification hooks were not enabled. Previously enabled hooks are unchanged.</string>
+	<key>Uses your SSH keys and trusted hosts. Installs the remote notification script on connection, retries after disconnection, and reconnects when AIBox starts. Requires Python 3.
+
+For first use, configure and trust the hook in remote Codex using the command below. Reopen the remote conversation after setup.</key>
+	<string>Uses your SSH keys and trusted hosts. Installs the remote notification script on connection, retries after disconnection, and reconnects when AIBox starts. Requires Python 3.
+
+For first use, configure and trust the hook in remote Codex using the command below. Reopen the remote conversation after setup.</string>
+	<key>Waiting for box confirmation…</key>
+	<string>Waiting for box confirmation…</string>
+	<key>Waiting for sound…</key>
+	<string>Waiting for sound…</string>
+	<key>Weekly TOKEN usage</key>
+	<string>Weekly TOKEN usage</string>
+	<key>When disabled, new question prompts will not be added or change the light. Existing notifications and raw logs are retained.</key>
+	<string>When disabled, new question prompts will not be added or change the light. Existing notifications and raw logs are retained.</string>
+	<key>Which color is the box flashing?</key>
+	<string>Which color is the box flashing?</string>
+	<key>aibox-notify was not found in the app. Rebuild AIBox.</key>
+	<string>aibox-notify was not found in the app. Rebuild AIBox.</string>
+	<key>box could not generate an identification color. Identify again.</key>
+	<string>box could not generate an identification color. Identify again.</string>
+	<key>box could not save pairing. Reconnect and try again.</key>
+	<string>box could not save pairing. Reconnect and try again.</string>
+	<key>box: %@ Reconnecting in 3 seconds…</key>
+	<string>box: %@ Reconnecting in 3 seconds…</string>
+	<key>box: Color confirmation required; displaying identification color…</key>
+	<string>box: Color confirmation required; displaying identification color…</string>
+	<key>box: Color mismatch; device not saved. Identify again or choose another device.</key>
+	<string>box: Color mismatch; device not saved. Identify again or choose another device.</string>
+	<key>box: Connected</key>
+	<string>box: Connected</string>
+	<key>box: Connecting…</key>
+	<string>box: Connecting…</string>
+	<key>box: Establishing encrypted Bluetooth connection. Allow pairing if prompted.</key>
+	<string>box: Establishing encrypted Bluetooth connection. Allow pairing if prompted.</string>
+	<key>box: Mac Bluetooth is off</key>
+	<string>box: Mac Bluetooth is off</string>
+	<key>box: No device found. Check its power and search again.</key>
+	<string>box: No device found. Check its power and search again.</string>
+	<key>box: No device selected. Use Choose / Change Device in Settings.</key>
+	<string>box: No device selected. Use Choose / Change Device in Settings.</string>
+	<key>box: Not connected</key>
+	<string>box: Not connected</string>
+	<key>box: Observe the flashing color on the physical box and select it in the window.</key>
+	<string>box: Observe the flashing color on the physical box and select it in the window.</string>
+	<key>box: Pairing confirmed; syncing lights…</key>
+	<string>box: Pairing confirmed; syncing lights…</string>
+	<key>box: Searching for nearby devices…</key>
+	<string>box: Searching for nearby devices…</string>
+	<key>box: Searching for remembered device…</key>
+	<string>box: Searching for remembered device…</string>
+	<key>box: Select a device, then click Identify.</key>
+	<string>box: Select a device, then click Identify.</string>
+	<key>box: Showing identification color again…</key>
+	<string>box: Showing identification color again…</string>
+	<key>box: Switching connections…</key>
+	<string>box: Switching connections…</string>
+	<key>box: Unpaired; ready to pair with another host.</key>
+	<string>box: Unpaired; ready to pair with another host.</string>
+	<key>box: Unpairing…</key>
+	<string>box: Unpairing…</string>
+	<key>box: Verifying device…</key>
+	<string>box: Verifying device…</string>
+	<key>box: Waiting for Bluetooth…</key>
+	<string>box: Waiting for Bluetooth…</string>
+	<key>box: Waiting for color confirmation and pairing to be saved…</key>
+	<string>box: Waiting for color confirmation and pairing to be saved…</string>
+	<key>box: Waiting for remembered AIBox; it will connect automatically when powered on…</key>
+	<string>box: Waiting for remembered AIBox; it will connect automatically when powered on…</string>
+	<key>macOS could not open the Codex conversation. Make sure Codex App is installed.</key>
+	<string>macOS could not open the Codex conversation. Make sure Codex App is installed.</string>
+	<key>macOS could not open the Codex conversation. This notification remains unopened.</key>
+	<string>macOS could not open the Codex conversation. This notification remains unopened.</string>
+</dict>
+</plist>

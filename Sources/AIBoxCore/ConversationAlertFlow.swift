@@ -37,7 +37,7 @@ public final class ConversationAlertFlow {
     public func shake() {
         guard let record = history.latestUnopened else { return }
         guard let url = CodexConversationLink.url(threadID: record.notification.threadID), openURL(url) else {
-            onFailure("macOS 無法開啟 Codex 對話；此通知仍保留為待開啟。")
+            onFailure(String(localized: "macOS could not open the Codex conversation. This notification remains unopened.", bundle: AppLanguage.bundle))
             return
         }
         didOpen(record.id)

@@ -90,11 +90,11 @@ public enum CodexSetupError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .unavailable(let message): return message
-        case .hookChanged: return "Hook 定義已變更，請重新檢查並確認信任。"
-        case .invalidResponse: return "無法讀取 Codex 的設定回應，未確認設定成功。"
-        case .timeout: return "Codex 設定操作逾時，請重新開啟設定視窗確認結果。"
-        case .rpc(let message): return "Codex 設定失敗：\(message)"
-        case .overridden: return "設定被其他層級覆蓋，尚未完成 Hook 啟用。"
+        case .hookChanged: return String(localized: "Hook definition changed. Check it again and confirm trust.", bundle: AppLanguage.bundle)
+        case .invalidResponse: return String(localized: "Could not read the Codex settings response. Setup success is unconfirmed.", bundle: AppLanguage.bundle)
+        case .timeout: return String(localized: "Codex setup timed out. Reopen Settings to check the result.", bundle: AppLanguage.bundle)
+        case .rpc(let message): return String(localized: "Codex setup failed: \(String(message))", bundle: AppLanguage.bundle)
+        case .overridden: return String(localized: "Settings are overridden by another level. Hook activation is incomplete.", bundle: AppLanguage.bundle)
         }
     }
 }
@@ -191,10 +191,10 @@ public struct CodexConfigurationService {
 
     private func makeServer() throws -> CodexConfigRPC {
         guard FileManager.default.isExecutableFile(atPath: helperURL.path) else {
-            throw CodexSetupError.unavailable("找不到 App 內的 aibox-notify，請重新建置 AIBox。")
+            throw CodexSetupError.unavailable(String(localized: "aibox-notify was not found in the app. Rebuild AIBox.", bundle: AppLanguage.bundle))
         }
         guard FileManager.default.isExecutableFile(atPath: executableURL.path) else {
-            throw CodexSetupError.unavailable("找不到 Codex 設定程式，請確認 Codex App 已安裝。")
+            throw CodexSetupError.unavailable(String(localized: "Codex configuration executable not found. Make sure Codex App is installed.", bundle: AppLanguage.bundle))
         }
         return try CodexConfigRPC(executableURL: executableURL, environment: environment)
     }
@@ -225,7 +225,7 @@ public struct CodexConfigurationService {
         guard let entries = listed["data"] as? [[String: Any]],
               let entry = entries.first, let metadata = entry["hooks"] as? [[String: Any]],
               let errors = entry["errors"] as? [[String: Any]] else { throw CodexSetupError.invalidResponse }
-        if !errors.isEmpty { throw CodexSetupError.rpc("Codex 無法載入 Hooks，請先檢查既有 Hooks 設定。") }
+        if !errors.isEmpty { throw CodexSetupError.rpc(String(localized: "Codex could not load hooks. Check the existing hook settings first.", bundle: AppLanguage.bundle)) }
         func status(event: String, metadataName: String) throws -> CodexHookStatus? {
             guard let matching = metadata.first(where: {
                 $0["eventName"] as? String == metadataName && $0["command"] as? String == hookCommand
@@ -306,7 +306,7 @@ private final class CodexConfigRPC {
             }
             guard response["id"] as? Int == id else { continue }
             if let error = response["error"] as? [String: Any] {
-                throw CodexSetupError.rpc(error["message"] as? String ?? "未知錯誤")
+                throw CodexSetupError.rpc(error["message"] as? String ?? String(localized: "Unknown error", bundle: AppLanguage.bundle))
             }
             guard let result = response["result"] as? [String: Any] else {
                 throw CodexSetupError.invalidResponse

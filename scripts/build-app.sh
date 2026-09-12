@@ -3,6 +3,7 @@ set -euo pipefail
 
 aibox_root="${0:A:h:h}"
 cd "$aibox_root"
+xcrun xcstringstool compile Localizations/Localizable.xcstrings --output-directory Sources/AIBoxCore/Resources
 swift build
 aibox_bundle="$aibox_root/build/AIBox.app"
 mkdir -p "$aibox_bundle/Contents/MacOS"

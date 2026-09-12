@@ -15,9 +15,9 @@ public enum BoxLightPattern: String {
 
     public var label: String {
         switch self {
-        case .idle: return "待機燈號"
-        case .completion: return "回覆停止燈號"
-        case .permission: return "授權請求燈號"
+        case .idle: return String(localized: "Idle light", bundle: AppLanguage.bundle)
+        case .completion: return String(localized: "Response stop light", bundle: AppLanguage.bundle)
+        case .permission: return String(localized: "Permission request light", bundle: AppLanguage.bundle)
         }
     }
 }

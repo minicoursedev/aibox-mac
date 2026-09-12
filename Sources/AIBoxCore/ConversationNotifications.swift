@@ -32,18 +32,18 @@ public final class ConversationNotificationMenu: NSObject {
         item.onOpened = onOpened
         item.target = self
         item.representedObject = notification.threadID
-        item.toolTip = "\(notification.eventLabel)\n\(notification.displayText)\n對話：\(notification.threadID)\n點擊開啟此對話"
+        item.toolTip = String(localized: "\(String(notification.eventLabel))\n\(String(notification.displayText))\nConversation: \(String(notification.threadID))\nClick to open this conversation", bundle: AppLanguage.bundle)
         return item
     }
 
     @objc private func openConversation(_ sender: NSMenuItem) {
         guard let id = sender.representedObject as? String,
               let url = CodexConversationLink.url(threadID: id) else {
-            onFailure("此通知缺少可開啟的對話 ID。")
+            onFailure(String(localized: "This notification has no conversation ID to open.", bundle: AppLanguage.bundle))
             return
         }
         guard openURL(url) else {
-            onFailure("macOS 無法開啟 Codex 對話，請確認 Codex App 已安裝。")
+            onFailure(String(localized: "macOS could not open the Codex conversation. Make sure Codex App is installed.", bundle: AppLanguage.bundle))
             return
         }
         (sender as? ConversationMenuItem)?.onOpened?()

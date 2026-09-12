@@ -26,7 +26,7 @@ private final class UsageSummaryView: NSView {
     private var isLoading = true
     private let textFont = NSFont.menuFont(ofSize: 14)
     private var textHeight: CGFloat {
-        ceil("重置時間".size(withAttributes: [.font: textFont]).height)
+        ceil(String(localized: "Reset time", bundle: AppLanguage.bundle).size(withAttributes: [.font: textFont]).height)
     }
 
     override var intrinsicContentSize: NSSize {
@@ -45,7 +45,7 @@ private final class UsageSummaryView: NSView {
         super.draw(dirtyRect)
 
         let gauges: [(String, CodexUsageWindow?)] = [
-            ("周 TOKEN 用量", weeklyWindow),
+            (String(localized: "Weekly TOKEN usage", bundle: AppLanguage.bundle), weeklyWindow),
             ("CODEX-5.3-Spark", sparkWindow),
         ]
         let lineWidth: CGFloat = 7
@@ -113,10 +113,10 @@ private final class UsageSummaryView: NSView {
                 let remainingSeconds = max(0, window.resetsAt.timeIntervalSinceNow)
                 resetProgress = max(0, min(1, remainingSeconds / totalSeconds))
             } else if isLoading {
-                resetText = "讀取中…"
+                resetText = String(localized: "Loading…", bundle: AppLanguage.bundle)
                 resetProgress = 0
             } else {
-                resetText = "重置時間未知"
+                resetText = String(localized: "Reset time unknown", bundle: AppLanguage.bundle)
                 resetProgress = 0
             }
 
@@ -159,10 +159,10 @@ private final class UsageSummaryView: NSView {
         let hours = (seconds % 86_400) / 3_600
         let minutes = (seconds % 3_600) / 60
 
-        if days > 0 { return "\(days)天\(hours)小時後" }
-        if hours > 0 { return "\(hours)小時\(minutes)分後" }
-        if minutes > 0 { return "\(minutes)分後" }
-        return "即將重置"
+        if days > 0 { return String(localized: "In \(String(days))d \(String(hours))h", bundle: AppLanguage.bundle) }
+        if hours > 0 { return String(localized: "In \(String(hours))h \(String(minutes))m", bundle: AppLanguage.bundle) }
+        if minutes > 0 { return String(localized: "In \(String(minutes))m", bundle: AppLanguage.bundle) }
+        return String(localized: "Resetting soon", bundle: AppLanguage.bundle)
     }
 }
 
@@ -171,11 +171,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
     private let history = CompletionHistory(defaults: .standard)
     private let payloadLog = NotificationPayloadLog()
     private let server = NotificationServer()
-    private let boxStatus = NSTextField(wrappingLabelWithString: "box：尚未連線")
+    private let boxStatus = NSTextField(wrappingLabelWithString: String(localized: "box: Not connected", bundle: AppLanguage.bundle))
     private lazy var box: BoxBluetoothClient = BoxBluetoothClient(
         onStatus: { [weak self] status in
             self?.boxStatus.stringValue = status
-            self?.statusItem?.button?.toolTip = "AIBox：執行中\n\(status)"
+            self?.statusItem?.button?.toolTip = String(localized: "AIBox: Running\n\(String(status))", bundle: AppLanguage.bundle)
             if let menu = self?.statusItem?.menu { self?.rebuild(menu) }
         },
         onConnectionChange: { [weak self] connected in
@@ -215,6 +215,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
     )
     private var statusItem: NSStatusItem!
     private var settingsWindow: NSWindow?
+    private var rebuildSettingsContent = false
     private var settingsTabs: NSTabView?
     private var detectShake = UserDefaults.standard.object(forKey: "aibox.detectShake") as? Bool ?? true
     private var detectSound = UserDefaults.standard.object(forKey: "aibox.detectSound") as? Bool ?? true
@@ -223,7 +224,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
     private var soundSensitivitySlider: NSSlider?
     private let soundSensitivityValue = NSTextField(labelWithString: "")
     private var latestSoundPeak: Int?
-    private let soundMeterValue = NSTextField(labelWithString: "等待收音…")
+    private let soundMeterValue = NSTextField(labelWithString: String(localized: "Waiting for sound…", bundle: AppLanguage.bundle))
     private let soundThresholdStatus = NSTextField(labelWithString: "")
     private var soundMeterTimeout: Timer?
     private var unpairBoxButton: NSButton?
@@ -237,12 +238,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         return colors
     }()
     private let usageView = UsageSummaryView()
-    private let codexStatus = NSTextField(wrappingLabelWithString: "尚未檢查 Codex 設定。")
+    private let codexStatus = NSTextField(wrappingLabelWithString: String(localized: "Codex settings have not been checked.", bundle: AppLanguage.bundle))
+    private var codexStatusText: (() -> String)?
     private let codexConfigPath = NSTextField(wrappingLabelWithString: "")
-    private let notificationStatus = NSTextField(wrappingLabelWithString: "尚未收到通知。")
+    private let notificationStatus = NSTextField(wrappingLabelWithString: String(localized: "No notifications received yet.", bundle: AppLanguage.bundle))
     private let remoteConnection = RemoteNotificationConnection()
     private let remoteHost = NSTextField(string: UserDefaults.standard.string(forKey: "aibox.remoteHost") ?? "")
-    private let remoteStatus = NSTextField(wrappingLabelWithString: "尚未連線")
+    private let remoteStatus = NSTextField(wrappingLabelWithString: String(localized: "Not connected", bundle: AppLanguage.bundle))
     private var remoteButton: NSButton!
     private var setupButton: NSButton!
     private var permissionRequestButton: NSButton!
@@ -262,13 +264,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         do {
             try server.start { [weak self] payload in
                 guard let self else {
-                    return BridgeReply(accepted: false, visibleCount: 0, error: "AIBox 已停止。")
+                    return BridgeReply(accepted: false, visibleCount: 0, error: String(localized: "AIBox has stopped.", bundle: AppLanguage.bundle))
                 }
                 return self.receive(payload)
             }
         } catch {
             let alert = NSAlert()
-            alert.messageText = "AIBox 無法啟動"
+            alert.messageText = String(localized: "AIBox could not start", bundle: AppLanguage.bundle)
             alert.informativeText = error.localizedDescription
             alert.runModal()
             NSApp.terminate(nil)
@@ -278,7 +280,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         updateStatusIcon(isConnected: false)
         if let button = statusItem.button {
-            button.toolTip = "AIBox：執行中"
+            button.toolTip = String(localized: "AIBox: Running", bundle: AppLanguage.bundle)
             button.setAccessibilityLabel("AIBox")
         }
         let menu = NSMenu(title: "AIBox")
@@ -297,7 +299,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             guard let self else { return }
             self.remoteStatus.stringValue = status
             self.remoteHost.isEnabled = !self.remoteConnection.isEnabled
-            self.remoteButton?.title = self.remoteConnection.isEnabled ? "斷線" : "儲存並連線"
+            self.remoteButton?.title = self.remoteConnection.isEnabled ? String(localized: "Disconnect", bundle: AppLanguage.bundle) : String(localized: "Save and Connect", bundle: AppLanguage.bundle)
         }
         if UserDefaults.standard.bool(forKey: "aibox.remoteEnabled") {
             remoteConnection.connect(host: remoteHost.stringValue)
@@ -320,12 +322,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             try payloadLog.append(payload)
         } catch {
             return BridgeReply(accepted: false, visibleCount: history.recent.count,
-                               error: "無法保存通知 payload：\(error.localizedDescription)")
+                               error: String(localized: "Could not save notification payload: \(String(error.localizedDescription))", bundle: AppLanguage.bundle))
         }
         do {
             guard let notification = try TurnCompletion.parse(payload) else {
                 return BridgeReply(accepted: false, visibleCount: history.recent.count,
-                                   error: "此事件不是 AIBox 支援的對話通知。")
+                                   error: String(localized: "This event is not a conversation notification supported by AIBox.", bundle: AppLanguage.bundle))
             }
             if notification.type == "PermissionRequest", !acceptsPermissionRequests {
                 return BridgeReply(accepted: true, visibleCount: history.recent.count)
@@ -346,7 +348,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             return BridgeReply(accepted: true, visibleCount: history.recent.count)
         } catch {
             return BridgeReply(accepted: false, visibleCount: history.recent.count,
-                               error: "通知格式不符，需包含 type、thread-id 與 turn-id。")
+                               error: String(localized: "Invalid notification format; type, thread-id and turn-id are required.", bundle: AppLanguage.bundle))
         }
     }
 
@@ -358,16 +360,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
     private func rebuild(_ menu: NSMenu) {
         menu.removeAllItems()
         menu.font = .menuFont(ofSize: 14)
-        menu.addItem(menuLabel("AIBox：執行中"))
+        menu.addItem(menuLabel(String(localized: "AIBox: Running", bundle: AppLanguage.bundle)))
         menu.addItem(menuLabel(boxStatus.stringValue))
         let usageItem = NSMenuItem()
         usageView.frame = NSRect(origin: .zero, size: usageView.intrinsicContentSize)
         usageItem.view = usageView
         menu.addItem(usageItem)
         menu.addItem(.separator())
-        menu.addItem(menuLabel("最近通知（最多 20 筆）"))
+        menu.addItem(menuLabel(String(localized: "Recent notifications (up to 20)", bundle: AppLanguage.bundle)))
         if history.recent.isEmpty {
-            menu.addItem(menuLabel("尚無通知"))
+            menu.addItem(menuLabel(String(localized: "No notifications", bundle: AppLanguage.bundle)))
         } else {
             for record in history.recent {
                 let text = record.notification.displayText
@@ -380,10 +382,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             }
         }
         menu.addItem(.separator())
-        let settings = NSMenuItem(title: "設定…", action: #selector(openSettings), keyEquivalent: ",")
+        let settings = NSMenuItem(title: String(localized: "Settings…", bundle: AppLanguage.bundle), action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
-        let quit = NSMenuItem(title: "結束", action: #selector(quitAIBox), keyEquivalent: "q")
+        let quit = NSMenuItem(title: String(localized: "Quit", bundle: AppLanguage.bundle), action: #selector(quitAIBox), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
     }
@@ -427,44 +429,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
     }
 
     @objc private func openSettings() {
-        if settingsWindow == nil {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 600, height: 540),
+        if settingsWindow == nil || rebuildSettingsContent {
+            rebuildSettingsContent = false
+            let window = settingsWindow ?? NSWindow(contentRect: NSRect(x: 0, y: 0, width: 720, height: 580),
                                   styleMask: [.titled, .closable], backing: .buffered, defer: false)
-            window.title = "AIBox 設定"
+            window.title = String(localized: "AIBox Settings", bundle: AppLanguage.bundle)
             window.isReleasedWhenClosed = false
             window.delegate = self
-            setupButton = NSButton(title: "設定 Codex", target: self, action: #selector(setupCodex))
+            setupButton = NSButton(title: String(localized: "Set Up Codex", bundle: AppLanguage.bundle), target: self, action: #selector(setupCodex))
             setupButton.bezelStyle = .rounded
             permissionRequestButton = NSButton(
-                checkboxWithTitle: "接收 PermissionRequest（授權請求通知）",
+                checkboxWithTitle: String(localized: "Receive PermissionRequest notifications", bundle: AppLanguage.bundle),
                 target: self,
                 action: #selector(togglePermissionRequests))
             permissionRequestButton.state = acceptsPermissionRequests ? .on : .off
             userInputRequestButton = NSButton(
-                checkboxWithTitle: "接收問答提醒（等待回答／選擇方案）",
+                checkboxWithTitle: String(localized: "Receive question and option prompts", bundle: AppLanguage.bundle),
                 target: self, action: #selector(toggleUserInputRequests))
             userInputRequestButton.state = acceptsUserInputRequests ? .on : .off
-            userInputRequestButton.toolTip = "關閉後不新增問答提醒或切換燈號；既有清單及原始通知紀錄保留。"
+            userInputRequestButton.toolTip = String(localized: "When disabled, new question prompts will not be added or change the light. Existing notifications and raw logs are retained.", bundle: AppLanguage.bundle)
             codexConfigPath.font = .monospacedSystemFont(ofSize: 11, weight: .regular)
             codexConfigPath.textColor = .secondaryLabelColor
             notificationStatus.textColor = .secondaryLabelColor
-            let connectButton = NSButton(title: "重新連線", target: self, action: #selector(connectBox))
+            let connectButton = NSButton(title: String(localized: "Reconnect", bundle: AppLanguage.bundle), target: self, action: #selector(connectBox))
             connectButton.bezelStyle = .rounded
-            let selectBoxButton = NSButton(title: "選擇／更換裝置…", target: self, action: #selector(openBoxPairing))
+            let selectBoxButton = NSButton(title: String(localized: "Choose / Change Device…", bundle: AppLanguage.bundle), target: self, action: #selector(openBoxPairing))
             selectBoxButton.bezelStyle = .rounded
-            let unpairButton = NSButton(title: "解除配對", target: self, action: #selector(unpairBox))
+            let unpairButton = NSButton(title: String(localized: "Unpair", bundle: AppLanguage.bundle), target: self, action: #selector(unpairBox))
             unpairButton.bezelStyle = .rounded
             unpairBoxButton = unpairButton
             let connectionButtons = NSStackView(views: [connectButton, selectBoxButton, unpairButton])
             connectionButtons.spacing = 10
-            let shakeButton = NSButton(checkboxWithTitle: "偵測晃動", target: self, action: #selector(toggleDetection(_:)))
+            let shakeButton = NSButton(checkboxWithTitle: String(localized: "Detect Motion", bundle: AppLanguage.bundle), target: self, action: #selector(toggleDetection(_:)))
             shakeButton.tag = 0
             shakeButton.state = detectShake ? .on : .off
-            shakeButton.toolTip = "控制晃動開啟通知；不影響開機搖晃 2 秒重新配對。"
-            let soundButton = NSButton(checkboxWithTitle: "偵測聲音", target: self, action: #selector(toggleDetection(_:)))
+            shakeButton.toolTip = String(localized: "Open notifications by shaking. This does not affect shaking for 2 seconds at startup to reset pairing.", bundle: AppLanguage.bundle)
+            let soundButton = NSButton(checkboxWithTitle: String(localized: "Detect Sound", bundle: AppLanguage.bundle), target: self, action: #selector(toggleDetection(_:)))
             soundButton.tag = 1
             soundButton.state = detectSound ? .on : .off
-            soundButton.toolTip = "控制拍手等突發聲音開啟通知。"
+            soundButton.toolTip = String(localized: "Open notifications with sudden sounds such as clapping.", bundle: AppLanguage.bundle)
             for button in [shakeButton, soundButton] { button.font = .systemFont(ofSize: 14) }
             let detectionRow = NSStackView(views: [shakeButton, soundButton])
             detectionRow.spacing = 24
@@ -477,10 +480,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             sensitivitySlider.action = #selector(changeSoundSensitivity(_:))
             sensitivitySlider.isContinuous = true
             sensitivitySlider.isEnabled = detectSound
-            sensitivitySlider.setAccessibilityLabel("收音敏感度")
-            sensitivitySlider.toolTip = "拖曳白色拉桿比對目前音量；音量超過拉桿位置時立即轉橘色。"
+            sensitivitySlider.setAccessibilityLabel(String(localized: "Sound sensitivity", bundle: AppLanguage.bundle))
+            sensitivitySlider.toolTip = String(localized: "Drag the white thumb to compare with the current level. The bar turns orange when the level exceeds the thumb.", bundle: AppLanguage.bundle)
             soundSensitivitySlider = sensitivitySlider
-            soundSensitivityValue.stringValue = "設定 \(soundSensitivity)"
+            soundSensitivityValue.stringValue = String(localized: "Threshold \(String(soundSensitivity))", bundle: AppLanguage.bundle)
             soundSensitivityValue.font = .monospacedDigitSystemFont(ofSize: 13, weight: .regular)
             soundMeterValue.font = .monospacedDigitSystemFont(ofSize: 12, weight: .regular)
             let soundValues = NSStackView(views: [soundSensitivityValue, soundMeterValue])
@@ -491,13 +494,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
                 label.font = .systemFont(ofSize: 11)
                 label.textColor = .secondaryLabelColor
             }
-            let soundTitle = NSTextField(labelWithString: "收音調整")
+            let soundTitle = NSTextField(labelWithString: String(localized: "Sound Adjustment", bundle: AppLanguage.bundle))
             soundTitle.font = .systemFont(ofSize: 14, weight: .semibold)
             soundThresholdStatus.font = .systemFont(ofSize: 12, weight: .semibold)
             let soundTitleRow = NSStackView(views: [soundTitle, soundThresholdStatus])
             soundTitleRow.spacing = 12
             let soundHelp = NSTextField(wrappingLabelWithString:
-                "白色拉桿是設定位置，填色是目前音量。拖過音量交界時立即變色，方便邊聽邊調整。")
+                String(localized: "The white thumb sets the threshold; the fill shows the current level. The color changes as you cross the level, so you can adjust while listening.", bundle: AppLanguage.bundle))
             soundHelp.font = .systemFont(ofSize: 12)
             soundHelp.textColor = .secondaryLabelColor
             let soundSettings = NSStackView(views: [soundTitleRow, soundValues, sensitivitySlider, soundScale, soundHelp])
@@ -510,7 +513,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             }
             updateSoundMeter(nil)
             let note = NSTextField(wrappingLabelWithString:
-                "Hook 需確認信任後才會執行。設定後請重新開啟 Codex 對話；若尚未載入，請自行重啟 Codex。保持 AIBox 執行，收到通知後點擊該筆即可開啟對應對話。Stop 表示進入停止處理；其他 Hook 仍可能要求續跑。")
+                String(localized: "Hooks run only after you confirm trust. Reopen your Codex conversation after setup; restart Codex if the hooks have not loaded. Keep AIBox running and click a notification to open its conversation. Stop marks stop processing; other hooks may still request continuation.", bundle: AppLanguage.bundle))
             note.font = .systemFont(ofSize: 12)
             note.textColor = .secondaryLabelColor
             let colorSettings = LightColorSettingsView(
@@ -527,11 +530,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
                 }
                 self?.box.setColors(colors)
             }
+            let languagePicker = NSPopUpButton()
+            languagePicker.addItems(withTitles: [
+                "繁體中文", "English"
+            ])
+            languagePicker.selectItem(at: AppLanguage.allCases.firstIndex(of: AppLanguage.selected) ?? 0)
+            languagePicker.target = self
+            languagePicker.action = #selector(changeLanguage(_:))
+            languagePicker.setAccessibilityLabel(String(localized: "Language", bundle: AppLanguage.bundle))
+            let languageRow = NSStackView(views: [
+                NSTextField(labelWithString: String(localized: "Language", bundle: AppLanguage.bundle)), languagePicker
+            ])
+            languageRow.spacing = 12
+            let languageHelp = NSTextField(wrappingLabelWithString:
+                String(localized: "Language changes take effect immediately and are saved automatically.", bundle: AppLanguage.bundle))
+            languageHelp.font = .systemFont(ofSize: 12)
+            languageHelp.textColor = .secondaryLabelColor
             let tabs = NSTabView()
-            remoteHost.placeholderString = "SSH 主機別名，例如 srv"
-            remoteHost.setAccessibilityLabel("遠端 SSH 主機")
+            remoteHost.placeholderString = String(localized: "SSH host alias, e.g. srv", bundle: AppLanguage.bundle)
+            remoteHost.setAccessibilityLabel(String(localized: "Remote SSH host", bundle: AppLanguage.bundle))
             remoteHost.widthAnchor.constraint(equalToConstant: 280).isActive = true
-            remoteButton = NSButton(title: remoteConnection.isEnabled ? "斷線" : "儲存並連線",
+            remoteButton = NSButton(title: remoteConnection.isEnabled ? String(localized: "Disconnect", bundle: AppLanguage.bundle) : String(localized: "Save and Connect", bundle: AppLanguage.bundle),
                                     target: self, action: #selector(toggleRemoteConnection))
             remoteButton.bezelStyle = .rounded
             let remoteRow = NSStackView(views: [remoteHost, remoteButton])
@@ -539,7 +558,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             remoteStatus.font = .systemFont(ofSize: 12)
             remoteStatus.textColor = .secondaryLabelColor
             let remoteHelp = NSTextField(wrappingLabelWithString:
-                "沿用 SSH 金鑰及已信任的主機。連線時安裝遠端通知腳本，斷線後自動重試；下次開啟 AIBox 會恢復連線。需 Python 3。\n\n首次使用還需在遠端 Codex 設定並信任 Hook，指令如下。完成設定後請重新開啟遠端對話。")
+                String(localized: "Uses your SSH keys and trusted hosts. Installs the remote notification script on connection, retries after disconnection, and reconnects when AIBox starts. Requires Python 3.\n\nFor first use, configure and trust the hook in remote Codex using the command below. Reopen the remote conversation after setup.", bundle: AppLanguage.bundle))
             remoteHelp.font = .systemFont(ofSize: 12)
             let remoteCommand = NSTextField(wrappingLabelWithString: "python3 ~/.codex/aibox/notify.py")
             remoteCommand.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
@@ -547,17 +566,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             tabs.font = .systemFont(ofSize: 14)
             tabs.translatesAutoresizingMaskIntoConstraints = false
             let pages: [(id: String, title: String, summary: String, views: [NSView])] = [
-                ("sensors", "感應", "選擇用晃動或聲音開啟通知，並即時調整收音。",
+                ("general", String(localized: "General", bundle: AppLanguage.bundle), String(localized: "Choose the display language for AIBox.", bundle: AppLanguage.bundle),
+                 [languageRow, languageHelp]),
+                ("sensors", String(localized: "Sensors", bundle: AppLanguage.bundle), String(localized: "Choose motion or sound to open notifications, and adjust the sound threshold live.", bundle: AppLanguage.bundle),
                  [detectionRow, soundSettings]),
-                ("lights", "燈號", "設定待機與提醒的顏色。燈號對應最新尚未開啟的通知；等待回答沿用授權請求燈色。",
+                ("lights", String(localized: "Lights", bundle: AppLanguage.bundle), String(localized: "Set idle and alert colors. Lights reflect the latest unopened notification; questions use the permission request colors.", bundle: AppLanguage.bundle),
                  [colorSettings]),
-                ("notifications", "通知", "回覆停止通知會自動接收。其他提醒可個別開關，最近 20 筆通知可從選單列查看。",
+                ("notifications", String(localized: "Notifications", bundle: AppLanguage.bundle), String(localized: "Response stop notifications are received automatically. Toggle other alerts individually and view the latest 20 notifications in the menu bar.", bundle: AppLanguage.bundle),
                  [permissionRequestButton, userInputRequestButton, notificationStatus]),
-                ("device", "裝置", "管理目前配對的 AIBox，或選擇另一台裝置。",
+                ("device", String(localized: "Device", bundle: AppLanguage.bundle), String(localized: "Manage the paired AIBox or choose another device.", bundle: AppLanguage.bundle),
                  [boxStatus, connectionButtons]),
-                ("remote", "遠端", "接收一台 SSH 主機的回覆停止、授權請求及問答提醒。Mac 必須保持在線。",
+                ("remote", String(localized: "Remote", bundle: AppLanguage.bundle), String(localized: "Receive response stop, permission and question alerts from one SSH host. Your Mac must remain online.", bundle: AppLanguage.bundle),
                  [remoteRow, remoteStatus, remoteHelp, remoteCommand]),
-                ("codex", "Codex", "將 Codex 的回覆與詢問提醒傳到 AIBox。",
+                ("codex", "Codex", String(localized: "Send Codex response and question alerts to AIBox.", bundle: AppLanguage.bundle),
                  [setupButton, codexStatus, codexConfigPath, note])
             ]
             for page in pages {
@@ -599,9 +620,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
                 tabs.topAnchor.constraint(equalTo: window.contentView!.topAnchor, constant: 20),
                 tabs.bottomAnchor.constraint(equalTo: window.contentView!.bottomAnchor, constant: -20)
             ])
-            window.center()
+            if settingsWindow == nil { window.center() }
             settingsWindow = window
         }
+        setupButton.isEnabled = !setupBusy
         unpairBoxButton?.isEnabled = box.canUnpair
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow?.makeKeyAndOrderFront(nil)
@@ -622,10 +644,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
 
     private func updateNotificationStatus() {
         if let latest = history.recent.first {
-            notificationStatus.stringValue = "最後收到通知：\(timeFormatter.string(from: latest.receivedAt))"
+            notificationStatus.stringValue = String(localized: "Last notification: \(String(timeFormatter.string(from: latest.receivedAt)))", bundle: AppLanguage.bundle)
         } else {
-            notificationStatus.stringValue = "尚未收到通知。"
+            notificationStatus.stringValue = String(localized: "No notifications received yet.", bundle: AppLanguage.bundle)
         }
+    }
+
+    @objc private func changeLanguage(_ sender: NSPopUpButton) {
+        guard AppLanguage.allCases.indices.contains(sender.indexOfSelectedItem) else { return }
+        let language = AppLanguage.allCases[sender.indexOfSelectedItem]
+        guard language != AppLanguage.selected else { return }
+        AppLanguage.selected = language
+        let selectedTab = settingsTabs?.selectedTabViewItem?.identifier
+        // Rebuild only the settings content, keeping the window and live services.
+        // Shared controls are reused; release their old layout constraints first.
+        func removeConstraints(_ view: NSView) {
+            NSLayoutConstraint.deactivate(view.constraints)
+            view.subviews.forEach(removeConstraints)
+        }
+        if let content = settingsWindow?.contentView {
+            removeConstraints(content)
+            settingsWindow?.contentView = NSView(frame: content.frame)
+        }
+        rebuildSettingsContent = true
+        openSettings()
+        if let selectedTab { settingsTabs?.selectTabViewItem(withIdentifier: selectedTab) }
+        if let codexStatusText { codexStatus.stringValue = codexStatusText() }
+        box.refreshLanguage()
+        remoteConnection.refreshLanguage()
+        boxPairingWindow.refreshLanguage()
+        if let menu = statusItem?.menu { rebuild(menu) }
+        usageView.needsDisplay = true
     }
 
     @objc private func setupCodex() { runCodexSetup(configure: true) }
@@ -667,7 +716,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         sender.doubleValue = Double(value)
         guard value != soundSensitivity else { return }
         soundSensitivity = value
-        soundSensitivityValue.stringValue = "設定 \(value)"
+        soundSensitivityValue.stringValue = String(localized: "Threshold \(String(value))", bundle: AppLanguage.bundle)
         refreshSoundMeter()
         UserDefaults.standard.set(value, forKey: "aibox.soundSensitivity")
         box.setSoundSensitivity(value)
@@ -688,7 +737,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         defer { slider.needsDisplay = true }
         guard detectSound, let peak = latestSoundPeak else {
             cell.soundLevel = nil
-            soundMeterValue.stringValue = detectSound ? "等待收音…" : "聲音偵測已關閉"
+            soundMeterValue.stringValue = detectSound ? String(localized: "Waiting for sound…", bundle: AppLanguage.bundle) : String(localized: "Sound detection is off", bundle: AppLanguage.bundle)
             soundThresholdStatus.stringValue = ""
             slider.setAccessibilityValueDescription(soundMeterValue.stringValue)
             return
@@ -697,10 +746,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         let level = min(100, max(0, (decibels + 90) / 90 * 100))
         cell.soundLevel = level
         let above = level >= Double(soundSensitivity)
-        soundThresholdStatus.stringValue = above ? "音量高於拉桿" : "音量低於拉桿"
+        soundThresholdStatus.stringValue = above ? String(localized: "Above threshold", bundle: AppLanguage.bundle) : String(localized: "Below threshold", bundle: AppLanguage.bundle)
         soundThresholdStatus.textColor = above ? .systemOrange : .secondaryLabelColor
-        soundMeterValue.stringValue = "目前音量 \(Int(level.rounded()))"
-        slider.setAccessibilityValueDescription("設定 \(soundSensitivity)，\(soundMeterValue.stringValue)")
+        soundMeterValue.stringValue = String(localized: "Current level \(String(Int(level.rounded())))", bundle: AppLanguage.bundle)
+        slider.setAccessibilityValueDescription(String(localized: "Threshold \(String(soundSensitivity)), \(String(soundMeterValue.stringValue))", bundle: AppLanguage.bundle))
     }
     func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow, window === settingsWindow else { return }
@@ -711,7 +760,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
 
     private func showError(_ message: String) {
         let alert = NSAlert()
-        alert.messageText = "無法開啟對話"
+        alert.messageText = String(localized: "Could Not Open Conversation", bundle: AppLanguage.bundle)
         alert.informativeText = message
         alert.runModal()
     }
@@ -723,16 +772,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
               let executable = bundle.url(forResource: "codex", withExtension: nil),
               let helper = Bundle.main.executableURL?.deletingLastPathComponent()
                   .appendingPathComponent("aibox-notify") else {
-            throw CodexSetupError.unavailable("找不到 Codex App 或 aibox-notify，請確認安裝與建置結果。")
+            throw CodexSetupError.unavailable(String(localized: "Codex App or aibox-notify was not found. Check the installation and build.", bundle: AppLanguage.bundle))
         }
         return CodexConfigurationService(executableURL: executable, helperURL: helper)
+    }
+
+    private func updateCodexStatus(_ text: @autoclosure @escaping () -> String) {
+        codexStatusText = text
+        codexStatus.stringValue = text()
     }
 
     private func runCodexSetup(configure: Bool) {
         guard !setupBusy else { return }
         setupBusy = true
         setupButton.isEnabled = false
-        codexStatus.stringValue = "正在讀取 Codex 設定…"
+        updateCodexStatus(String(localized: "Reading Codex settings…", bundle: AppLanguage.bundle))
         Task { @MainActor in
             defer {
                 setupBusy = false
@@ -743,7 +797,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
                 var configuration = try await Task.detached { try service.read() }.value
                 codexConfigPath.stringValue = configuration.filePath
                 if configure && !configuration.allConfigured {
-                    codexStatus.stringValue = "正在設定回覆停止、授權請求與問答提醒…"
+                    updateCodexStatus(String(localized: "Setting up response stop, permission and question alerts…", bundle: AppLanguage.bundle))
                     let expected = configuration
                     configuration = try await Task.detached {
                         try service.configure(expected: expected)
@@ -752,30 +806,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
                 if configure && !configuration.allActive {
                     let pending = configuration.configuredHooks.filter { !$0.isActive }
                     let alert = NSAlert()
-                    alert.messageText = "信任並啟用 AIBox 對話通知 Hook？"
-                    let commands = pending.map { "事件：\($0.eventName)\n程式：\($0.command)" }.joined(separator: "\n\n")
-                    alert.informativeText = commands + "\n\nCodex 將把對話 ID、輪次 ID，以及最後回覆、授權請求或問題與選項傳給本機 AIBox。此程式只接收通知，不代答問題、不同意或拒絕授權，不要求續跑。"
-                    alert.addButton(withTitle: "取消")
-                    alert.addButton(withTitle: "信任並啟用")
+                    alert.messageText = String(localized: "Trust and enable AIBox conversation notification hooks?", bundle: AppLanguage.bundle)
+                    let commands = pending.map { String(localized: "Event: \(String($0.eventName))\nCommand: \(String($0.command))", bundle: AppLanguage.bundle) }.joined(separator: "\n\n")
+                    alert.informativeText = commands + String(localized: "\n\nCodex will send the conversation ID, turn ID, and final response, permission request, or questions and options to local AIBox. This program only receives notifications. It does not answer questions, approve or deny permissions, or request continuation.", bundle: AppLanguage.bundle)
+                    alert.addButton(withTitle: String(localized: "Cancel", bundle: AppLanguage.bundle))
+                    alert.addButton(withTitle: String(localized: "Trust and Enable", bundle: AppLanguage.bundle))
                     guard alert.runModal() == .alertSecondButtonReturn else {
-                        codexStatus.stringValue = "尚未信任的通知 Hook 未啟用；原本已啟用的 Hook 不受影響。"
+                        updateCodexStatus(String(localized: "Untrusted notification hooks were not enabled. Previously enabled hooks are unchanged.", bundle: AppLanguage.bundle))
                         return
                     }
-                    codexStatus.stringValue = "正在記錄此 Hook 的信任確認…"
+                    updateCodexStatus(String(localized: "Saving hook trust confirmation…", bundle: AppLanguage.bundle))
                     let expected = configuration
                     configuration = try await Task.detached { try service.trust(expected: expected) }.value
                 }
                 if !configuration.hooksEnabled {
-                    codexStatus.stringValue = "Codex 的 hooks 功能已停用；AIBox 未更改此設定。"
+                    updateCodexStatus(String(localized: "Codex hooks are disabled. AIBox did not change this setting.", bundle: AppLanguage.bundle))
                 } else {
                     func status(_ hook: CodexHookStatus?) -> String {
-                        guard let hook else { return "未設定" }
-                        return hook.isActive ? "已設定並信任" : "待信任／啟用"
+                        guard let hook else { return String(localized: "Not configured", bundle: AppLanguage.bundle) }
+                        return hook.isActive ? String(localized: "Configured and trusted", bundle: AppLanguage.bundle) : String(localized: "Awaiting trust / activation", bundle: AppLanguage.bundle)
                     }
-                    codexStatus.stringValue = "回覆停止：\(status(configuration.hook))\n授權請求：\(status(configuration.permissionHook))\n問答提醒：\(status(configuration.userInputHook))\n設定狀態不代表已收到通知。"
+                    updateCodexStatus(String(localized: "Response stop: \(String(status(configuration.hook)))\nPermission requests: \(String(status(configuration.permissionHook)))\nQuestions: \(String(status(configuration.userInputHook)))\nSetup status does not confirm notification delivery.", bundle: AppLanguage.bundle))
                 }
             } catch {
-                codexStatus.stringValue = error.localizedDescription
+                updateCodexStatus(error.localizedDescription)
             }
         }
     }

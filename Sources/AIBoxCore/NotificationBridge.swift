@@ -23,9 +23,9 @@ public enum BridgeError: Error, LocalizedError {
         switch self {
         case .system(let operation, let code):
             return "\(operation)：\(String(cString: strerror(code)))"
-        case .alreadyRunning: return "AIBox 已經在執行。"
-        case .unexpectedSocketPath: return "通知通道的位置已被其他檔案占用。"
-        case .noReply: return "未收到 AIBox 確認，請確認 App 正在執行。"
+        case .alreadyRunning: return String(localized: "AIBox is already running.", bundle: AppLanguage.bundle)
+        case .unexpectedSocketPath: return String(localized: "The notification socket path is occupied by another file.", bundle: AppLanguage.bundle)
+        case .noReply: return String(localized: "No acknowledgment from AIBox. Make sure the app is running.", bundle: AppLanguage.bundle)
         }
     }
 }
@@ -99,7 +99,7 @@ public enum NotificationClient {
         let fd = try LocalSocket.descriptor()
         defer { Darwin.close(fd) }
         guard LocalSocket.connect(fd) == 0 else {
-            throw BridgeError.system("請先啟動 AIBox（connect）", errno)
+            throw BridgeError.system(String(localized: "Start AIBox first (connect)", bundle: AppLanguage.bundle), errno)
         }
         try LocalSocket.write(payload, to: fd)
         Darwin.shutdown(fd, SHUT_WR)
@@ -179,7 +179,7 @@ public final class NotificationServer {
                         try LocalSocket.write(JSONEncoder().encode(reply), to: client)
                     } catch {
                         // Failure is returned through the socket; notification text is not logged.
-                        let reply = BridgeReply(accepted: false, visibleCount: 0, error: "通知傳輸失敗。")
+                        let reply = BridgeReply(accepted: false, visibleCount: 0, error: String(localized: "Notification transfer failed.", bundle: AppLanguage.bundle))
                         if let encoded = try? JSONEncoder().encode(reply) {
                             try? LocalSocket.write(encoded, to: client)
                         }
